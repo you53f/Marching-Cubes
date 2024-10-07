@@ -66,18 +66,18 @@ public class TerrainGen : MonoBehaviour
             if (terrainChunks.activeInHierarchy)
             {
                 state = false;
-                Debug.Log("Yes Terrain Chunks");
+                //Debug.Log("Yes Terrain Chunks");
             }
             else
             {
                 state = true;
-                Debug.Log("No Terrain Chunks");
+                //Debug.Log("No Terrain Chunks");
             }
         }
         else
         {
             state = true;
-            Debug.Log("No Terrain Chunks");
+            //Debug.Log("No Terrain Chunks");
         }
         return state;
     }
@@ -96,11 +96,13 @@ public class TerrainGen : MonoBehaviour
         this.bufferBeforeDestroy = bufferBeforeDestroy;
 
         mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
         dataPointCube = new GameObject[gridLines, gridLines, gridLines];
 
         gridValues = new float[gridLines, gridLines, gridLines];
         gridCubeSize = gridScale * gridCubeSizeFactor;
+        Debug.Log($"Number of Voxels is {gridLines*gridLines*gridLines}");
 
         for (int z = 0; z < gridValues.GetLength(2); z++)
         {
@@ -108,7 +110,7 @@ public class TerrainGen : MonoBehaviour
             {
                 for (int x = 0; x < gridValues.GetLength(0); x++)
                 {
-                    float value = isoValue + Random.Range(0.5f, 1f);
+                    float value = isoValue + Random.Range(-0.5f, 0.5f);
                     gridValues[x, y, z] = value;
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
@@ -185,6 +187,7 @@ public class TerrainGen : MonoBehaviour
     private void GenerateMesh()
     {
         mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         vertices.Clear();
         triangles.Clear();
 

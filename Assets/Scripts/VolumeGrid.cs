@@ -28,10 +28,10 @@ public struct VolumeGrid
                 for (int x = 0; x < numberofCubes; x++)
                 {
                     Vector3 cubePosition = new Vector3(x, y, z) * gridScale;
-                    cubePosition.x -= (numberofCubes * gridScale) / 2 - gridScale / 2;
-                    cubePosition.y -= (numberofCubes * gridScale) / 2 - gridScale / 2;
-                    cubePosition.z -= (numberofCubes * gridScale) / 2 - gridScale / 2;
-                    //Debug.Log("cube [" + x + ", " + y + ", " + z + "] has a position " + cubePosition);
+                    cubePosition.x -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
+                    cubePosition.y -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
+                    cubePosition.z -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
+                    Debug.Log("cube [" + x + ", " + y + ", " + z + "] has a position " + cubePosition);
 
                     cubes[x, y, z] = new Cube(cubePosition, gridScale);
                 }

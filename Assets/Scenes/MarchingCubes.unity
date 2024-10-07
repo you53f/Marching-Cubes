@@ -378,13 +378,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brushSize: 0
-  brushStrength: 2
+  brushStrength: 1
   brushFallback: 1
-  chunksInOneAxis: {x: 4, y: 4, z: 4}
-  gridLines: 3
-  gridScale: 1
+  chunksInOneAxis: {x: 1, y: 1, z: 1}
+  gridLines: 22
+  gridScale: 0.2
   bufferBeforeDestroy: 5
-  gridcubeSizeFactor: 0.9
+  gridcubeSizeFactor: 0.5
   boxesVisible: 1
   terrainGeneratorPrefab: {fileID: 3068083419940389891, guid: d8266520ecfa45a4bb26f2412b28d903, type: 3}
 --- !u!1 &705507993

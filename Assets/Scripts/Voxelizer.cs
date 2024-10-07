@@ -187,11 +187,8 @@ public class Voxelizer : MonoBehaviour
         }
     }
 
-    private int GetLongestDimension(int value1, int value2, int value3)
+    private int GetLongestDimension(int lengthX, int lengthY, int lengthZ)
     {
-        int lengthX = value1;
-        int lengthY = value2;
-        int lengthZ = value3;
         int length;
 
         if (lengthX >= lengthY && lengthX >= lengthZ)
@@ -208,11 +205,8 @@ public class Voxelizer : MonoBehaviour
         return length;
     }
 
-    private int GetShortestDimension(int value1, int value2, int value3)
+    private int GetShortestDimension(int lengthX, int lengthY, int lengthZ)
     {
-        int lengthX = value1;
-        int lengthY = value2;
-        int lengthZ = value3;
         int length;
 
         if (lengthX <= lengthY && lengthX <= lengthZ)

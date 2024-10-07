@@ -47,7 +47,7 @@ public class EditVoxels : MonoBehaviour
         voxelizer.StartVoxels();
         voxelGridValues = voxelizer.GetVoxelGrid();
         gridLines = GetLongestDimension(voxelGridValues);
-        Debug.Log($"Most Grid Lines = {gridLines}");
+        //Debug.Log($"Most Grid Lines = {gridLines}");
         gridScale = voxelizer.voxelResolution;
 
         // Uncomment below for testing with no Chunks
@@ -91,6 +91,7 @@ public class EditVoxels : MonoBehaviour
         this.bufferBeforeDestroy = bufferBeforeDestroy;
 
         mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
         dataPointCube = new GameObject[gridLines, gridLines, gridLines];
 
@@ -124,6 +125,7 @@ public class EditVoxels : MonoBehaviour
         volumeGrid = new VolumeGrid(gridLines - 1, gridScale, isoValue);
 
         GenerateMesh();
+        RemoveCubes(dataPointCube,0f);
     }
 
     // What's responsible for scalar field editing
@@ -180,6 +182,8 @@ public class EditVoxels : MonoBehaviour
     private void GenerateMesh()
     {
         mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        
         vertices.Clear();
         triangles.Clear();
 
@@ -203,10 +207,11 @@ public class EditVoxels : MonoBehaviour
         //Video 16 -- GenerateCollider not implemented
         //GenerateCollider();
 
-        RemoveCubes(dataPointCube);
+        RemoveCubes(dataPointCube, bufferBeforeDestroy);
     }
 
-    private void RemoveCubes(GameObject[,,] dataPointCube)
+
+    private void RemoveCubes(GameObject[,,] dataPointCube, float bufferBeforeDestroy)
     {
         for (int z = 0; z < gridLines; z++)
         {
