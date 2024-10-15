@@ -454,14 +454,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1513372591}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecf962b1368e36e43aa78f27e4610a0f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f65e0e1fd0429f44a3813c082a66e12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spheresVisible: 0
-  voxelResolution: 0.4
-  sphereRadius: 0.5
-  voxelBuffer: 0
+  chunkGridLines: 4
+  spheresVisible: 1
+  voxelResolution: 0.3
+  sphereRadius: 0.7
+  voxelBuffer: 2
   targetObject: {fileID: 130553719}
+  chunksInX: 0
+  chunksInY: 0
+  chunksInZ: 0
+  totalChunks: 0
 --- !u!1 &1608904969
 GameObject:
   m_ObjectHideFlags: 0

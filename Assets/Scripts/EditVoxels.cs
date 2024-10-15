@@ -38,20 +38,18 @@ public class EditVoxels : MonoBehaviour
     private float[,,] voxelGridValues;
     private float[,,] gridValues;
     GameObject[,,] dataPointCube;
-    private Voxelizer voxelizer;
+
+    bool chunksManagerDisabled;
+
 
     private void Awake()
     {
         InputManager.onTouching += TouchingCallback;
-        voxelizer = FindObjectOfType<Voxelizer>();
-        voxelizer.StartVoxels();
-        voxelGridValues = voxelizer.GetVoxelGrid();
-        gridLines = GetLongestDimension(voxelGridValues);
-        //Debug.Log($"Most Grid Lines = {gridLines}");
-        gridScale = voxelizer.voxelResolution;
-
         // Uncomment below for testing with no Chunks
-        Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
+
+        chunksManagerDisabled = CheckForVoxelChunksManager();
+        if (chunksManagerDisabled)
+            {}//Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy, chunksData);
     }
 
     private void OnDestroy()
@@ -59,27 +57,34 @@ public class EditVoxels : MonoBehaviour
         InputManager.onTouching -= TouchingCallback;
     }
 
-    private int GetLongestDimension(float[,,] values)
+    private bool CheckForVoxelChunksManager()
     {
-        int lengthX = values.GetLength(0);
-        int lengthY = values.GetLength(1);
-        int lengthZ = values.GetLength(2);
-        int length;
-
-        if (lengthX >= lengthY && lengthX >= lengthZ)
-            length = lengthX;
-
-        else if (lengthY >= lengthX && lengthY >= lengthZ)
-            length = lengthY;
-
+        GameObject chunksManager = GameObject.Find("Chunks Manager");
+        bool state;
+        // Check if the GameObject exists and is enabled
+        if (chunksManager != null)
+        {
+            if (chunksManager.activeInHierarchy)
+            {
+                state = false;
+                //Debug.Log("Yes Chunks Manager");
+            }
+            else
+            {
+                state = true;
+                //Debug.Log("No Chunks Manager");
+            }
+        }
         else
-            length = lengthZ;
-
-        return length;
+        {
+            state = true;
+            //Debug.Log("No Chunks Manager");
+        }
+        return state;
     }
 
     public void Initialize(float gridScale, int gridLines, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
-    float gridCubeSizeFactor, float bufferBeforeDestroy)
+    float gridCubeSizeFactor, float bufferBeforeDestroy, float[,,] chunksData)
     {
         this.gridScale = gridScale;
         this.gridLines = gridLines;
@@ -89,6 +94,7 @@ public class EditVoxels : MonoBehaviour
         this.brushFallback = brushFallback;
         this.gridCubeSizeFactor = gridCubeSizeFactor;
         this.bufferBeforeDestroy = bufferBeforeDestroy;
+        voxelGridValues = chunksData;
 
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
@@ -106,7 +112,7 @@ public class EditVoxels : MonoBehaviour
                 {
                     gridValues[x, y, z] = voxelGridValues[x, y, z];
                     //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
-                    //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
+                    //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {gridValues[x,y,z]}");
 
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     dataPointCube[x, y, z] = cube;
@@ -125,7 +131,7 @@ public class EditVoxels : MonoBehaviour
         volumeGrid = new VolumeGrid(gridLines - 1, gridScale, isoValue);
 
         GenerateMesh();
-        RemoveCubes(dataPointCube,0f);
+        RemoveCubes(dataPointCube, 0f);
     }
 
     // What's responsible for scalar field editing
@@ -183,7 +189,7 @@ public class EditVoxels : MonoBehaviour
     {
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-        
+
         vertices.Clear();
         triangles.Clear();
 

@@ -9,13 +9,11 @@ using UnityEditor;
 
 using UnityEngine;
 
-using Vector4 = UnityEngine.Vector4;
-
 using Vector3 = UnityEngine.Vector3;
 
 using Vector2 = UnityEngine.Vector2;
 
-public class TerrainGen : MonoBehaviour
+public class EditVoxelsOld : MonoBehaviour
 {
     [Header("Brush Settings")]
     [SerializeField] private int brushSize;
@@ -28,8 +26,8 @@ public class TerrainGen : MonoBehaviour
 
     [Header("Data")]
     [SerializeField] private bool boxesVisible;
-    [SerializeField] private int gridLines;
-    [SerializeField] private float gridScale;
+    private int gridLines;
+    private float gridScale;
     [SerializeField] private float gridCubeSizeFactor;
     [SerializeField] private float isoValue;
     [SerializeField] private MeshFilter filter;
@@ -37,17 +35,22 @@ public class TerrainGen : MonoBehaviour
     private List<Vector3> vertices = new List<Vector3>();
     private List<int> triangles = new List<int>();
     private float gridCubeSize;
+    private float[,,] voxelGridValues;
     private float[,,] gridValues;
     GameObject[,,] dataPointCube;
-
-    private bool terrainChunksDisabled;
+    private OldVoxelizer voxelizer;
 
     private void Awake()
     {
         InputManager.onTouching += TouchingCallback;
-        
-        terrainChunksDisabled = CheckForTerrainChunks();
-        if(terrainChunksDisabled)
+        voxelizer = FindObjectOfType<OldVoxelizer>();
+        voxelizer.StartVoxels();
+        voxelGridValues = voxelizer.GetVoxelGrid();
+        gridLines = GetLongestDimension(voxelGridValues);
+        //Debug.Log($"Most Grid Lines = {gridLines}");
+        gridScale = voxelizer.voxelResolution;
+
+        // Uncomment below for testing with no Chunks
         Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
     }
 
@@ -56,32 +59,24 @@ public class TerrainGen : MonoBehaviour
         InputManager.onTouching -= TouchingCallback;
     }
 
-    private bool CheckForTerrainChunks()
-    {  
-        GameObject terrainChunks = GameObject.Find("TerrainChunks");
-        bool state;
-        // Check if the GameObject exists and is enabled
-        if (terrainChunks != null)
-        {
-            if (terrainChunks.activeInHierarchy)
-            {
-                state = false;
-                //Debug.Log("Yes Terrain Chunks");
-            }
-            else
-            {
-                state = true;
-                //Debug.Log("No Terrain Chunks");
-            }
-        }
-        else
-        {
-            state = true;
-            //Debug.Log("No Terrain Chunks");
-        }
-        return state;
-    }
+    private int GetLongestDimension(float[,,] values)
+    {
+        int lengthX = values.GetLength(0);
+        int lengthY = values.GetLength(1);
+        int lengthZ = values.GetLength(2);
+        int length;
 
+        if (lengthX >= lengthY && lengthX >= lengthZ)
+            length = lengthX;
+
+        else if (lengthY >= lengthX && lengthY >= lengthZ)
+            length = lengthY;
+
+        else
+            length = lengthZ;
+
+        return length;
+    }
 
     public void Initialize(float gridScale, int gridLines, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
     float gridCubeSizeFactor, float bufferBeforeDestroy)
@@ -102,7 +97,6 @@ public class TerrainGen : MonoBehaviour
 
         gridValues = new float[gridLines, gridLines, gridLines];
         gridCubeSize = gridScale * gridCubeSizeFactor;
-        Debug.Log($"Number of Voxels is {gridLines*gridLines*gridLines}");
 
         for (int z = 0; z < gridValues.GetLength(2); z++)
         {
@@ -110,8 +104,8 @@ public class TerrainGen : MonoBehaviour
             {
                 for (int x = 0; x < gridValues.GetLength(0); x++)
                 {
-                    float value = isoValue + Random.Range(-0.5f, 0.5f);
-                    gridValues[x, y, z] = value;
+                    gridValues[x, y, z] = voxelGridValues[x, y, z];
+                    //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -122,7 +116,7 @@ public class TerrainGen : MonoBehaviour
                     dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
 
                     MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
-                    meshRenderer.material.color = new Vector4(0.9f, 0.7f, 0f);
+                    meshRenderer.material.color = Color.grey;
                     meshRenderer.enabled = boxesVisible;
                 }
             }
@@ -131,6 +125,7 @@ public class TerrainGen : MonoBehaviour
         volumeGrid = new VolumeGrid(gridLines - 1, gridScale, isoValue);
 
         GenerateMesh();
+        RemoveCubes(dataPointCube,0f);
     }
 
     // What's responsible for scalar field editing
@@ -154,7 +149,7 @@ public class TerrainGen : MonoBehaviour
 
                     if (!IsValidGridPosition(currentGridPoisition))
                     {
-                        Debug.Log($"it hit {currentGridPoisition} which is invalid");
+                        //Debug.Log($"it hit {currentGridPoisition} which is invalid");
                         continue;
                     }
 
@@ -165,14 +160,14 @@ public class TerrainGen : MonoBehaviour
                         {
                             gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] -= brushStrength;
                             shouldGenerate = true;
-                            Debug.Log($"Successful decrease in cube {currentGridPoisition}");
+                            //Debug.Log($"Successful decrease in cube {currentGridPoisition}");
                         }
                         else
                         {
                             deminishingValue = brushStrength * Mathf.Exp(-distance * brushFallback / brushSize);
                             gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] -= deminishingValue;
                             shouldGenerate = true;
-                            Debug.Log($"Successful decrease in cube {currentGridPoisition}");
+                            //Debug.Log($"Successful decrease in cube {currentGridPoisition}");
                         }
                     }
                 }
@@ -188,6 +183,7 @@ public class TerrainGen : MonoBehaviour
     {
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        
         vertices.Clear();
         triangles.Clear();
 
@@ -211,10 +207,11 @@ public class TerrainGen : MonoBehaviour
         //Video 16 -- GenerateCollider not implemented
         //GenerateCollider();
 
-        RemoveCubes(dataPointCube);
+        RemoveCubes(dataPointCube, bufferBeforeDestroy);
     }
 
-    private void RemoveCubes(GameObject[,,] dataPointCube)
+
+    private void RemoveCubes(GameObject[,,] dataPointCube, float bufferBeforeDestroy)
     {
         for (int z = 0; z < gridLines; z++)
         {
@@ -250,62 +247,15 @@ public class TerrainGen : MonoBehaviour
         return worldPosition;
     }
 
-    //Mine
     private Vector3Int WorldToGridPosition(Vector3 worldPosition)
     {
         Vector3Int gridPosition = new Vector3Int();
-        Debug.Log($"World Position is {worldPosition}");
         gridPosition.x = Mathf.RoundToInt((worldPosition.x + ((gridLines * gridScale / 2)) - (gridScale / 2)) / gridScale);
         gridPosition.y = Mathf.RoundToInt((worldPosition.y + ((gridLines * gridScale / 2)) - (gridScale / 2)) / gridScale);
         gridPosition.z = Mathf.RoundToInt((worldPosition.z + ((gridLines * gridScale / 2)) - (gridScale / 2)) / gridScale);
         return gridPosition;
     }
 
-
-    //Perplexity
-    /* public Vector3 WorldToGridIndex(Vector3 worldPosition)
-    {
-        // Calculate half of the total grid size
-        float halfGridSize = (gridLines * gridScale) / 2f;
-
-        // Convert world position to grid index
-        int xIndex = Mathf.FloorToInt((worldPosition.x + halfGridSize) / gridScale);
-        int yIndex = Mathf.FloorToInt((worldPosition.y + halfGridSize) / gridScale);
-        int zIndex = Mathf.FloorToInt((worldPosition.z + halfGridSize) / gridScale);
-
-        // Return the grid index as a Vector3
-        return new Vector3(xIndex, yIndex, zIndex);
-    } */
-
-    //Course
-    /* private Vector3Int WorldtoGridPosition(Vector3 worldPosition)
-    {
-        Vector3Int gridPosition = new Vector3Int();
-
-        //Debug.Log($"world position passed is {worldPosition}");
-
-        float x = worldPosition.x / gridScale + (float)gridLines / 2 - gridScale / 2;
-        float y = worldPosition.y / gridScale + (float)gridLines / 2 - gridScale / 2;
-        float z = worldPosition.z / gridScale + (float)gridLines / 2 - gridScale / 2;
-
-        //Debug.Log($"Cube before Approximation: {x}, {y}, {z}");
-
-
-        //GenAlone 
-        gridPosition.x = Mathf.CeilToInt(x);
-        gridPosition.y = Mathf.CeilToInt(y);
-        gridPosition.z = Mathf.CeilToInt(z);
-
-        //Chunks 
-        gridPosition.x = Mathf.RoundToInt(x);
-        gridPosition.y = Mathf.RoundToInt(y);
-        gridPosition.z = Mathf.RoundToInt(z);
-
-
-        //Debug.Log($"Cube after Approximation: {gridPosition}");
-
-        return gridPosition;
-    } */
 
     // Just to avoid getting an error in the console when out of bounds
     private bool IsValidGridPosition(Vector3Int gridPosition)

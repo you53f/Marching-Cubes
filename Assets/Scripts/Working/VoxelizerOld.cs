@@ -6,7 +6,7 @@ using Vector4 = UnityEngine.Vector4;
 using Vector3 = UnityEngine.Vector3;
 using Vector2 = UnityEngine.Vector2;
 
-public class Voxelizer : MonoBehaviour
+public class VoxelizerOld : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] public int chunkGridLines;
@@ -39,9 +39,9 @@ public class Voxelizer : MonoBehaviour
     {
         editVoxelDisabled = CheckForEditVoxels();
         if (editVoxelDisabled)
-        {//StartVoxels();}
-        }
+        { StartVoxels(); }
     }
+
     public void StartVoxels()
     {
         // Set localOrigin to the minimum bounds of the mesh in world space
@@ -111,8 +111,8 @@ public class Voxelizer : MonoBehaviour
         // Create a 3D array to hold voxel data
         voxelGrid = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
 
-        // Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
-        // Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
+        Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
+        Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
 
 
         // Loop through each voxel
@@ -215,13 +215,11 @@ public class Voxelizer : MonoBehaviour
                     }
 
                     sphereRenderer.enabled = spheresVisible;
-
-                    // Debug.Log($"centered voxels at {x},{y},{z} is {centeredVoxels[x, y, z]}");
                 }
             }
         }
 
-        chunkedVoxels = ChunkingData(centeredVoxels);
+        //chunkedVoxels = ChunkingData(centeredVoxels);
     }
 
     private float[,,,] ChunkingData(float[,,] data)
@@ -237,8 +235,8 @@ public class Voxelizer : MonoBehaviour
         chunksInZ = numVoxelsZ / chunkGridLines;
         totalChunks = chunksInX * chunksInY * chunksInZ;
 
-        // Debug.Log($"Chunks in X: {chunksInX} | Y: {chunksInY} | Z: {chunksInZ}");
-        // Debug.Log($"Total Chunks is {totalChunks}");
+        Debug.Log($"Chunks in X: {chunksInX} | Y: {chunksInY} | Z: {chunksInZ}");
+        Debug.Log($"Total Chunks is {totalChunks}");
 
         float[,,,] chunked = new float[totalChunks, chunkGridLines, chunkGridLines, chunkGridLines];
 
@@ -249,30 +247,32 @@ public class Voxelizer : MonoBehaviour
 
         // Debug.Log($"chunked Dimensions are {dim1}, {dim2}, {dim3} and {dim4}");
 
+        int xGlobal = 0;
+        int yGlobal = 0;
+        int zGlobal = 0;
+
         for (int w = 0; w < totalChunks; w++)
         {
-            // Debug.Log($"Transferring Data of chunk {w}");
             for (int z = 0; z < chunkGridLines; z++)
             {
-                // Debug.Log($"in Z number {z}");
                 for (int y = 0; y < chunkGridLines; y++)
                 {
-                    // Debug.Log($"in Y number {y}");
                     for (int x = 0; x < chunkGridLines; x++)
                     {
-                        // Debug.Log($"in X number {x}");
+                        chunked[w, x, y, z] = data[xGlobal, yGlobal, zGlobal];
 
-                        int xGlobal = (w % chunksInX) * chunkGridLines + x;
-                        int yGlobal = ((w / chunksInX) % chunksInY) * chunkGridLines + y;
-                        int zGlobal = (w / (chunksInX * chunksInY)) * chunkGridLines + z;
-
-                        // Ensure we don't go out of bounds
-                        if (xGlobal < numVoxelsX && yGlobal < numVoxelsY && zGlobal < numVoxelsZ)
-                        {
-                            chunked[w, x, y, z] = data[xGlobal, yGlobal, zGlobal];
-                        }
-
-                        // Debug.Log($"centered {data[xGlobal, yGlobal, zGlobal]} of {x},{y},{z} is now chunk data {w},{x},{y},{z} with value {chunked[w, x, y, z]}");
+                        if (xGlobal >= numVoxelsX)
+                            xGlobal++;
+                        else if (xGlobal < numVoxelsX)
+                            xGlobal = 0;
+                        if (yGlobal >= numVoxelsY)
+                            yGlobal++;
+                        else if (yGlobal < numVoxelsY)
+                            yGlobal = 0;
+                        if (zGlobal >= numVoxelsZ)
+                            zGlobal++;
+                        else if (zGlobal < numVoxelsZ)
+                            zGlobal = 0;
                     }
                 }
             }

@@ -31,7 +31,7 @@ public struct VolumeGrid
                     cubePosition.x -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
                     cubePosition.y -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
                     cubePosition.z -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
-                    Debug.Log("cube [" + x + ", " + y + ", " + z + "] has a position " + cubePosition);
+                    //Debug.Log("cube [" + x + ", " + y + ", " + z + "] has a position " + cubePosition);
 
                     cubes[x, y, z] = new Cube(cubePosition, gridScale);
                 }
