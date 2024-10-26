@@ -36,7 +36,6 @@ public class TerrainChunks : MonoBehaviour
     private void Go()
     {        
         float terrainWorldSize = gridScale * (gridLines - 1);
-        Debug.Log($"variable is: {terrainWorldSize}");
 
         for (int z = 0; z < chunksInOneAxis.z; z++)
         {

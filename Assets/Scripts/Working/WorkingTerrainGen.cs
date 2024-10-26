@@ -95,7 +95,7 @@ public class WorkingTerrainGen : MonoBehaviour
             }
         }
 
-        volumeGrid = new VolumeGrid(gridLines - 1, gridScale, isoValue);
+        volumeGrid = new VolumeGrid(gridLines - 1,gridLines - 1,gridLines - 1, gridScale, isoValue);
 
         GenerateMesh();
     }

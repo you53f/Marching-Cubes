@@ -110,7 +110,7 @@ public class TerrainGen : MonoBehaviour
             {
                 for (int x = 0; x < gridValues.GetLength(0); x++)
                 {
-                    float value = isoValue + Random.Range(-0.5f, 0.5f);
+                    float value = isoValue + Random.Range(0.5f, 1f);
                     gridValues[x, y, z] = value;
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
@@ -128,7 +128,7 @@ public class TerrainGen : MonoBehaviour
             }
         }
 
-        volumeGrid = new VolumeGrid(gridLines - 1, gridScale, isoValue);
+        volumeGrid = new VolumeGrid(gridLines - 1,gridLines - 1,gridLines - 1, gridScale, isoValue);
 
         GenerateMesh();
     }

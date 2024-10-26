@@ -12,25 +12,25 @@ public struct VolumeGrid
 
     private float isoValue;
 
-    public VolumeGrid(int numberofCubes, float gridScale, float isoValue)
+    public VolumeGrid(int numberofCubesX, int numberofCubesY, int numberofCubesZ, float gridScale, float isoValue)
     {
-        cubes = new Cube[numberofCubes, numberofCubes, numberofCubes];
+        cubes = new Cube[numberofCubesX, numberofCubesY, numberofCubesZ];
         vertices = new List<Vector3>();
         triangles = new List<int>();
         uvs = new List<Vector2>();
 
         this.isoValue = isoValue;
 
-        for (int z = 0; z < numberofCubes; z++)
+        for (int z = 0; z < numberofCubesZ; z++)
         {
-            for (int y = 0; y < numberofCubes; y++)
+            for (int y = 0; y < numberofCubesY; y++)
             {
-                for (int x = 0; x < numberofCubes; x++)
+                for (int x = 0; x < numberofCubesX; x++)
                 {
                     Vector3 cubePosition = new Vector3(x, y, z) * gridScale;
-                    cubePosition.x -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
-                    cubePosition.y -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
-                    cubePosition.z -= ((numberofCubes * gridScale) / 2) - (gridScale / 2);
+                    cubePosition.x -= ((numberofCubesX * gridScale) / 2) - (gridScale / 2);
+                    cubePosition.y -= ((numberofCubesY * gridScale) / 2) - (gridScale / 2);
+                    cubePosition.z -= ((numberofCubesZ * gridScale) / 2) - (gridScale / 2);
                     //Debug.Log("cube [" + x + ", " + y + ", " + z + "] has a position " + cubePosition);
 
                     cubes[x, y, z] = new Cube(cubePosition, gridScale);
@@ -56,7 +56,7 @@ public struct VolumeGrid
             {
                 for (int x = 0; x < cubes.GetLength(0); x++)
                 {
-                    Cube currentcube = cubes[x, y, z];
+                    Cube currentCube = cubes[x, y, z];
 
                     float[] cornerValues = new float[8];
 
@@ -69,19 +69,19 @@ public struct VolumeGrid
                     cornerValues[6] = gridValues[x, y, z + 1];
                     cornerValues[7] = gridValues[x + 1, y, z + 1];
 
-                    currentcube.TriangulateWithInterpolation(isoValue, cornerValues);
+                    currentCube.TriangulateWithInterpolation(isoValue, cornerValues);
 
-                    vertices.AddRange(currentcube.GetVertices());
+                    vertices.AddRange(currentCube.GetVertices());
 
-                    int[] currentCubeTriangles = currentcube.GetTriangles();
+                    int[] currentCubeTriangles = currentCube.GetTriangles();
 
                     for (int i = 0; i < currentCubeTriangles.Length; i++)
                         currentCubeTriangles[i] += triangleStartIndex;
 
                     triangles.AddRange(currentCubeTriangles);
-                    triangleStartIndex += 12;
+                    triangleStartIndex += currentCube.GetVertices().Length;
 
-                    uvs.AddRange(currentcube.GetUvs());
+                    uvs.AddRange(currentCube.GetUvs());
                 }
             }
         }

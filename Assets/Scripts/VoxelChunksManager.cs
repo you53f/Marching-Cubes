@@ -16,7 +16,7 @@ public class VoxelChunksManager : MonoBehaviour
     [SerializeField] private float gridcubeSizeFactor;
     [SerializeField] private bool boxesVisible;
 
-    private Voxelizer voxelizer;
+    private ChunkingVoxelizer voxelizer;
     private float[,,,] chunkedVoxels;
     private int chunkGridLines;
     private float gridScale;
@@ -29,7 +29,7 @@ public class VoxelChunksManager : MonoBehaviour
 
 
     [Header("Elements")]
-    [SerializeField] private EditVoxels editVoxelsprefab;
+    [SerializeField] private EditVoxelsChunked editVoxelsprefab;
 
     void Start()
     {
@@ -44,7 +44,7 @@ public class VoxelChunksManager : MonoBehaviour
 
     private void Go()
     {
-        voxelizer = FindObjectOfType<Voxelizer>();
+        voxelizer = FindObjectOfType<ChunkingVoxelizer>();
         voxelizer.StartVoxels();
         chunkGridLines = voxelizer.chunkGridLines;
 
@@ -99,7 +99,7 @@ public class VoxelChunksManager : MonoBehaviour
                 }
             }
 
-            EditVoxels editVoxels = Instantiate(editVoxelsprefab, spawnPosition, Quaternion.identity, transform);
+            EditVoxelsChunked editVoxels = Instantiate(editVoxelsprefab, spawnPosition, Quaternion.identity, transform);
 
 
             editVoxels.Initialize(gridScale, chunkGridLines, boxesVisible, brushSize, brushStrength, brushFallback,
@@ -107,23 +107,5 @@ public class VoxelChunksManager : MonoBehaviour
         }
 
 
-    }
-    private int GetLongestDimension(float[,,] values)
-    {
-        int lengthX = values.GetLength(0);
-        int lengthY = values.GetLength(1);
-        int lengthZ = values.GetLength(2);
-        int length;
-
-        if (lengthX >= lengthY && lengthX >= lengthZ)
-            length = lengthX;
-
-        else if (lengthY >= lengthX && lengthY >= lengthZ)
-            length = lengthY;
-
-        else
-            length = lengthZ;
-
-        return length;
     }
 }

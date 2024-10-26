@@ -12,6 +12,7 @@ using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
 using Vector2 = UnityEngine.Vector2;
+using System.IO.Compression;
 
 public class EditVoxels : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class EditVoxels : MonoBehaviour
 
     [Header("Data")]
     [SerializeField] private bool boxesVisible;
-    private int gridLines;
+    private Vector3Int gridLines;
     private float gridScale;
     [SerializeField] private float gridCubeSizeFactor;
     [SerializeField] private float isoValue;
@@ -38,18 +39,22 @@ public class EditVoxels : MonoBehaviour
     private float[,,] voxelGridValues;
     private float[,,] gridValues;
     GameObject[,,] dataPointCube;
-
-    bool chunksManagerDisabled;
-
+    private Voxelizer voxelizer;
 
     private void Awake()
     {
         InputManager.onTouching += TouchingCallback;
-        // Uncomment below for testing with no Chunks
+        voxelizer = FindObjectOfType<Voxelizer>();
+        voxelizer.StartVoxels();
+        voxelGridValues = voxelizer.GetVoxelGrid();
+        gridLines.x = voxelGridValues.GetLength(0);
+        gridLines.y = voxelGridValues.GetLength(1);
+        gridLines.z = voxelGridValues.GetLength(2);
+        //Debug.Log($"Most Grid Lines = {gridLines}");
+        gridScale = voxelizer.voxelResolution;
 
-        chunksManagerDisabled = CheckForVoxelChunksManager();
-        if (chunksManagerDisabled)
-            {}//Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy, chunksData);
+        // Uncomment below for testing with no Chunks
+        Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
     }
 
     private void OnDestroy()
@@ -57,51 +62,26 @@ public class EditVoxels : MonoBehaviour
         InputManager.onTouching -= TouchingCallback;
     }
 
-    private bool CheckForVoxelChunksManager()
-    {
-        GameObject chunksManager = GameObject.Find("Chunks Manager");
-        bool state;
-        // Check if the GameObject exists and is enabled
-        if (chunksManager != null)
-        {
-            if (chunksManager.activeInHierarchy)
-            {
-                state = false;
-                //Debug.Log("Yes Chunks Manager");
-            }
-            else
-            {
-                state = true;
-                //Debug.Log("No Chunks Manager");
-            }
-        }
-        else
-        {
-            state = true;
-            //Debug.Log("No Chunks Manager");
-        }
-        return state;
-    }
-
-    public void Initialize(float gridScale, int gridLines, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
-    float gridCubeSizeFactor, float bufferBeforeDestroy, float[,,] chunksData)
+    public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
+    float gridCubeSizeFactor, float bufferBeforeDestroy)
     {
         this.gridScale = gridScale;
-        this.gridLines = gridLines;
+        this.gridLines.x = gridLinesx;
+        this.gridLines.y = gridLinesy;
+        this.gridLines.z = gridLinesz;
         this.boxesVisible = boxesVisible;
         this.brushSize = brushSize;
         this.brushStrength = brushStrength;
         this.brushFallback = brushFallback;
         this.gridCubeSizeFactor = gridCubeSizeFactor;
         this.bufferBeforeDestroy = bufferBeforeDestroy;
-        voxelGridValues = chunksData;
 
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-        dataPointCube = new GameObject[gridLines, gridLines, gridLines];
+        dataPointCube = new GameObject[gridLinesx, gridLinesy, gridLinesz];
 
-        gridValues = new float[gridLines, gridLines, gridLines];
+        gridValues = new float[gridLinesx, gridLinesy, gridLinesz];
         gridCubeSize = gridScale * gridCubeSizeFactor;
 
         for (int z = 0; z < gridValues.GetLength(2); z++)
@@ -112,7 +92,7 @@ public class EditVoxels : MonoBehaviour
                 {
                     gridValues[x, y, z] = voxelGridValues[x, y, z];
                     //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
-                    //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {gridValues[x,y,z]}");
+                    //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     dataPointCube[x, y, z] = cube;
@@ -122,16 +102,24 @@ public class EditVoxels : MonoBehaviour
                     dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
 
                     MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
-                    meshRenderer.material.color = Color.grey;
+                    
+                    if (gridValues[x, y, z] == 1)
+                    {
+                        meshRenderer.material.color = Color.red;
+                    }
+                    else if (gridValues[x, y, z] == 0)
+                    {
+                        meshRenderer.material.color = Color.black;
+                    }
                     meshRenderer.enabled = boxesVisible;
                 }
             }
         }
 
-        volumeGrid = new VolumeGrid(gridLines - 1, gridScale, isoValue);
+        volumeGrid = new VolumeGrid(gridLinesx - 1,gridLinesy-1, gridLinesz-1, gridScale, isoValue);
 
         GenerateMesh();
-        RemoveCubes(dataPointCube, 0f);
+        RemoveCubes(dataPointCube,0f);
     }
 
     // What's responsible for scalar field editing
@@ -189,7 +177,7 @@ public class EditVoxels : MonoBehaviour
     {
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-
+        
         vertices.Clear();
         triangles.Clear();
 
@@ -202,7 +190,7 @@ public class EditVoxels : MonoBehaviour
         for (int i = 0; i < uvs.Length; i++)
         {
             uvs[i] /= gridScale;
-            uvs[i] /= (gridLines - 1);
+            uvs[i] /= (gridLines.x - 1);
         }
 
         mesh.uv = uvs;
@@ -219,11 +207,11 @@ public class EditVoxels : MonoBehaviour
 
     private void RemoveCubes(GameObject[,,] dataPointCube, float bufferBeforeDestroy)
     {
-        for (int z = 0; z < gridLines; z++)
+        for (int z = 0; z < gridLines.z; z++)
         {
-            for (int y = 0; y < gridLines; y++)
+            for (int y = 0; y < gridLines.y; y++)
             {
-                for (int x = 0; x < gridLines; x++)
+                for (int x = 0; x < gridLines.x; x++)
                 {
                     if (gridValues[x, y, z] < isoValue - bufferBeforeDestroy)
                     {
@@ -247,18 +235,18 @@ public class EditVoxels : MonoBehaviour
     private Vector3 GridToWorldPosition(int x, int y, int z)
     {
         Vector3 worldPosition = new Vector3(x, y, z) * gridScale;
-        worldPosition.x -= (gridLines * gridScale) / 2 - gridScale / 2;
-        worldPosition.y -= (gridLines * gridScale) / 2 - gridScale / 2;
-        worldPosition.z -= (gridLines * gridScale) / 2 - gridScale / 2;
+        worldPosition.x -= (gridLines.x * gridScale) / 2 - gridScale / 2;
+        worldPosition.y -= (gridLines.y * gridScale) / 2 - gridScale / 2;
+        worldPosition.z -= (gridLines.z * gridScale) / 2 - gridScale / 2;
         return worldPosition;
     }
 
     private Vector3Int WorldToGridPosition(Vector3 worldPosition)
     {
         Vector3Int gridPosition = new Vector3Int();
-        gridPosition.x = Mathf.RoundToInt((worldPosition.x + ((gridLines * gridScale / 2)) - (gridScale / 2)) / gridScale);
-        gridPosition.y = Mathf.RoundToInt((worldPosition.y + ((gridLines * gridScale / 2)) - (gridScale / 2)) / gridScale);
-        gridPosition.z = Mathf.RoundToInt((worldPosition.z + ((gridLines * gridScale / 2)) - (gridScale / 2)) / gridScale);
+        gridPosition.x = Mathf.RoundToInt((worldPosition.x + ((gridLines.x * gridScale / 2)) - (gridScale / 2)) / gridScale);
+        gridPosition.y = Mathf.RoundToInt((worldPosition.y + ((gridLines.y * gridScale / 2)) - (gridScale / 2)) / gridScale);
+        gridPosition.z = Mathf.RoundToInt((worldPosition.z + ((gridLines.z * gridScale / 2)) - (gridScale / 2)) / gridScale);
         return gridPosition;
     }
 
@@ -266,13 +254,13 @@ public class EditVoxels : MonoBehaviour
     // Just to avoid getting an error in the console when out of bounds
     private bool IsValidGridPosition(Vector3Int gridPosition)
     {
-        return gridPosition.x >= 0 && gridPosition.x < gridLines &&
-               gridPosition.y >= 0 && gridPosition.y < gridLines &&
-               gridPosition.z >= 0 && gridPosition.z < gridLines;
+        return gridPosition.x >= 0 && gridPosition.x < gridLines.x &&
+               gridPosition.y >= 0 && gridPosition.y < gridLines.y &&
+               gridPosition.z >= 0 && gridPosition.z < gridLines.z;
     }
 
 #if UNITY_EDITOR
-    private void OnDrawGizmos()
+    /* private void OnDrawGizmos()
     {
         if (!EditorApplication.isPlaying)
             return;
@@ -291,6 +279,6 @@ public class EditVoxels : MonoBehaviour
                 }
             }
         }
-    }
+    } */
 #endif
 }

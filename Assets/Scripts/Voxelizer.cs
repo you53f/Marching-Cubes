@@ -1,20 +1,13 @@
 using System;
-using System.Numerics;
-using Unity.VisualScripting;
 using UnityEngine;
-using Vector4 = UnityEngine.Vector4;
-using Vector3 = UnityEngine.Vector3;
-using Vector2 = UnityEngine.Vector2;
 
 public class Voxelizer : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] public int chunkGridLines;
     [SerializeField] private bool spheresVisible;
-    [SerializeField] public float voxelResolution;
+    public float voxelResolution;
     [SerializeField] private float sphereRadius;
     [SerializeField] private int voxelBuffer;
-
     public GameObject targetObject; // The prefab or GameObject to voxelize
 
 
@@ -22,26 +15,15 @@ public class Voxelizer : MonoBehaviour
     private float[,,] centeredVoxels;
     private Vector3 localOrigin; // The world position of the voxel at index (0, 0, 0)
     //private float[,,] tempGrid;
-
-    [HideInInspector] public int chunksInX;
-    [HideInInspector] public int chunksInY;
-    [HideInInspector] public int chunksInZ;
-    [HideInInspector] public int totalChunks;
-
-    int numVoxelsX;
-    int numVoxelsY;
-    int numVoxelsZ;
-
-    private bool editVoxelDisabled;
-    private float[,,,] chunkedVoxels;
+    [HideInInspector] public int numVoxelsX;
+    [HideInInspector] public int numVoxelsY;
+    [HideInInspector] public int numVoxelsZ;
 
     public void Start()
     {
-        editVoxelDisabled = CheckForEditVoxels();
-        if (editVoxelDisabled)
-        {//StartVoxels();}
-        }
+        StartVoxels();
     }
+
     public void StartVoxels()
     {
         // Set localOrigin to the minimum bounds of the mesh in world space
@@ -50,34 +32,8 @@ public class Voxelizer : MonoBehaviour
         VoxelizeMesh();
         // tempGrid = GetVoxelGrid();
         // Debug.Log($"Voxels from method is {tempGrid.GetLength(0)}, {tempGrid.GetLength(1)},and {tempGrid.GetLength(2)}");
-
     }
 
-    private bool CheckForEditVoxels()
-    {
-        GameObject editVoxels = GameObject.Find("Edit Voxels");
-        bool state;
-        // Check if the GameObject exists and is enabled
-        if (editVoxels != null)
-        {
-            if (editVoxels.activeInHierarchy)
-            {
-                state = false;
-                //Debug.Log("Yes Edit Voxels");
-            }
-            else
-            {
-                state = true;
-                //Debug.Log("No Edit Voxels");
-            }
-        }
-        else
-        {
-            state = true;
-            //Debug.Log("No Edit Voxels");
-        }
-        return state;
-    }
 
     public void VoxelizeMesh()
     {
@@ -103,17 +59,19 @@ public class Voxelizer : MonoBehaviour
         int vY = Mathf.CeilToInt((max.y - min.y) / voxelResolution);
         int vZ = Mathf.CeilToInt((max.z - min.z) / voxelResolution);
 
-        numVoxelsX = AdjustToNextDivisible(vX + voxelBuffer);
-        numVoxelsY = AdjustToNextDivisible(vY + voxelBuffer);
-        numVoxelsZ = AdjustToNextDivisible(vZ + voxelBuffer);
+        numVoxelsX = AdjustToNextOdd(vX + voxelBuffer);
+        numVoxelsY = AdjustToNextOdd(vY + voxelBuffer);
+        numVoxelsZ = AdjustToNextOdd(vZ + voxelBuffer);
 
+        Debug.Log($"number of voxels is {numVoxelsX * numVoxelsY * numVoxelsZ}");
 
         // Create a 3D array to hold voxel data
         voxelGrid = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
+        centeredVoxels = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
 
-        // Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
-        // Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
+        Debug.Log($"Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
 
+        GameObject[,,] dataPointCube = new GameObject[numVoxelsX, numVoxelsY, numVoxelsZ];
 
         // Loop through each voxel
         for (int z = 0; z < numVoxelsZ; z++)
@@ -138,32 +96,23 @@ public class Voxelizer : MonoBehaviour
         int offsetY = voxelBuffer / 2;
         int offsetZ = voxelBuffer / 2;
 
-        CenterVoxels(numVoxelsX, numVoxelsY, numVoxelsZ, centeredVoxels, offsetX, offsetY, offsetZ);
+        CenterVoxels(numVoxelsX, numVoxelsY, numVoxelsZ, centeredVoxels, offsetX, offsetY, offsetZ, dataPointCube);
     }
-    public int AdjustToNextDivisible(int number)
+
+    public int AdjustToNextOdd(int number)
     {
-        // Check if the number is divisible by chunkGridLines
-        if (number % chunkGridLines == 0)
+        if (number % 2 == 0)
         {
-            // If divisible, return the original number
-            return number;
+            return number++;
         }
         else
         {
-            // If not divisible, calculate the next divisible integer
-            int remainder = number % chunkGridLines;
-            int nextDivisible = number + (chunkGridLines - remainder);
-            return nextDivisible;
+            return number;
         }
     }
 
-    private void CenterVoxels(int numVoxelsX, int numVoxelsY, int numVoxelsZ, float[,,] centeredVoxels,
-    int offsetX, int offsetY, int offsetZ)
+    private void CenterVoxels(int numVoxelsX, int numVoxelsY, int numVoxelsZ, float[,,] centeredVoxels, int offsetX, int offsetY, int offsetZ, GameObject[,,] dataPointCube)
     {
-        GameObject[,,] dataPointCube = new GameObject[numVoxelsX, numVoxelsY, numVoxelsZ];
-
-        centeredVoxels = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
-
         // Centering Voxels
         for (int z = 0; z < numVoxelsZ; z++)
         {
@@ -182,140 +131,43 @@ public class Voxelizer : MonoBehaviour
                 }
             }
         }
-        for (int z = 0; z < numVoxelsZ; z++)
-        {
-            for (int y = 0; y < numVoxelsY; y++)
-            {
-                for (int x = 0; x < numVoxelsX; x++)
-                {
+        // for (int z = 0; z < numVoxelsZ; z++)
+        // {
+        //     for (int y = 0; y < numVoxelsY; y++)
+        //     {
+        //         for (int x = 0; x < numVoxelsX; x++)
+        //         {
 
-                    GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    dataPointCube[x, y, z] = sphere;
-                    dataPointCube[x, y, z].transform.parent = this.transform;
+        //             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //             dataPointCube[x, y, z] = sphere;
+        //             dataPointCube[x, y, z].transform.parent = this.transform;
 
-                    // Set position directly to voxelCenter
-                    Vector3Int index = new Vector3Int(x, y, z);
-                    Vector3 voxelCenter = GetVoxelWorldPosition(index);
-                    dataPointCube[x, y, z].transform.position = voxelCenter;
+        //             // Set position directly to voxelCenter
+        //             Vector3Int index = new Vector3Int(x, y, z);
+        //             Vector3 voxelCenter = GetVoxelWorldPosition(index);
+        //             dataPointCube[x, y, z].transform.position = voxelCenter;
 
-                    // Scale spheres based on resolution and radius
-                    dataPointCube[x, y, z].transform.localScale =
-                        new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+        //             // Scale spheres based on resolution and radius
+        //             dataPointCube[x, y, z].transform.localScale =
+        //                 new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
 
-                    Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+        //             Renderer sphereRenderer = sphere.GetComponent<Renderer>();
 
-                    // Change color based on occupancy
-                    if (centeredVoxels[x, y, z] == 1)
-                    {
-                        sphereRenderer.material.color = Color.red;
-                    }
-                    else if (centeredVoxels[x, y, z] == 0)
-                    {
-                        sphereRenderer.material.color = Color.black;
-                    }
+        //             // Change color based on occupancy
+        //             if (centeredVoxels[x, y, z] == 1)
+        //             {
+        //                 sphereRenderer.material.color = Color.red;
+        //             }
+        //             else if (centeredVoxels[x, y, z] == 0)
+        //             {
+        //                 sphereRenderer.material.color = Color.black;
+        //             }
 
-                    sphereRenderer.enabled = spheresVisible;
-
-                    // Debug.Log($"centered voxels at {x},{y},{z} is {centeredVoxels[x, y, z]}");
-                }
-            }
-        }
-
-        chunkedVoxels = ChunkingData(centeredVoxels);
+        //             sphereRenderer.enabled = spheresVisible;
+        //         }
+        //     }
+        // }
     }
-
-    private float[,,,] ChunkingData(float[,,] data)
-    {
-        if (data == null)
-        {
-            Debug.LogError("Input data array is null.");
-            return null; // or handle as appropriate
-        }
-
-        chunksInX = numVoxelsX / chunkGridLines;
-        chunksInY = numVoxelsY / chunkGridLines;
-        chunksInZ = numVoxelsZ / chunkGridLines;
-        totalChunks = chunksInX * chunksInY * chunksInZ;
-
-        // Debug.Log($"Chunks in X: {chunksInX} | Y: {chunksInY} | Z: {chunksInZ}");
-        // Debug.Log($"Total Chunks is {totalChunks}");
-
-        float[,,,] chunked = new float[totalChunks, chunkGridLines, chunkGridLines, chunkGridLines];
-
-        // int dim1 = chunked.GetLength(0);
-        // int dim2 = chunked.GetLength(1);
-        // int dim3 = chunked.GetLength(2);
-        // int dim4 = chunked.GetLength(3);
-
-        // Debug.Log($"chunked Dimensions are {dim1}, {dim2}, {dim3} and {dim4}");
-
-        for (int w = 0; w < totalChunks; w++)
-        {
-            // Debug.Log($"Transferring Data of chunk {w}");
-            for (int z = 0; z < chunkGridLines; z++)
-            {
-                // Debug.Log($"in Z number {z}");
-                for (int y = 0; y < chunkGridLines; y++)
-                {
-                    // Debug.Log($"in Y number {y}");
-                    for (int x = 0; x < chunkGridLines; x++)
-                    {
-                        // Debug.Log($"in X number {x}");
-
-                        int xGlobal = (w % chunksInX) * chunkGridLines + x;
-                        int yGlobal = ((w / chunksInX) % chunksInY) * chunkGridLines + y;
-                        int zGlobal = (w / (chunksInX * chunksInY)) * chunkGridLines + z;
-
-                        // Ensure we don't go out of bounds
-                        if (xGlobal < numVoxelsX && yGlobal < numVoxelsY && zGlobal < numVoxelsZ)
-                        {
-                            chunked[w, x, y, z] = data[xGlobal, yGlobal, zGlobal];
-                        }
-
-                        // Debug.Log($"centered {data[xGlobal, yGlobal, zGlobal]} of {x},{y},{z} is now chunk data {w},{x},{y},{z} with value {chunked[w, x, y, z]}");
-                    }
-                }
-            }
-        }
-        return chunked;
-    }
-
-    private int GetLongestDimension(int lengthX, int lengthY, int lengthZ)
-    {
-        int length;
-
-        if (lengthX >= lengthY && lengthX >= lengthZ)
-            length = lengthX;
-
-        else if (lengthY >= lengthX && lengthY >= lengthZ)
-            length = lengthY;
-
-        else
-            length = lengthZ;
-
-        Debug.Log($"Longest Dimension is {length}");
-
-        return length;
-    }
-
-    private int GetShortestDimension(int lengthX, int lengthY, int lengthZ)
-    {
-        int length;
-
-        if (lengthX <= lengthY && lengthX <= lengthZ)
-            length = lengthX;
-
-        else if (lengthY <= lengthX && lengthY <= lengthZ)
-            length = lengthY;
-
-        else
-            length = lengthZ;
-
-        Debug.Log($"Shortest Dimension is {length}");
-
-        return length;
-    }
-
     private int IsVoxelOccupied(Vector3 voxelCenter)
     {
         // Use OverlapSphere to check if the voxel sphere overlaps with the target object's collider
@@ -328,18 +180,9 @@ public class Voxelizer : MonoBehaviour
         return 0;
     }
 
-    public int GetGridLines()
-    {
-        return chunkGridLines;
-    }
     public float[,,] GetVoxelGrid()
     {
         return centeredVoxels;
-    }
-
-    public float[,,,] GetChunkedVoxels()
-    {
-        return chunkedVoxels;
     }
 
     private Vector3 GetVoxelWorldPosition(Vector3Int voxelIndex)

@@ -380,12 +380,12 @@ MonoBehaviour:
   brushSize: 0
   brushStrength: 1
   brushFallback: 1
-  chunksInOneAxis: {x: 2, y: 2, z: 2}
+  chunksInOneAxis: {x: 2, y: 4, z: 3}
   gridLines: 4
   gridScale: 1
   bufferBeforeDestroy: 5
-  gridcubeSizeFactor: 0.97
-  boxesVisible: 0
+  gridcubeSizeFactor: 0.4
+  boxesVisible: 1
   terrainGeneratorPrefab: {fileID: 3068083419940389891, guid: d8266520ecfa45a4bb26f2412b28d903, type: 3}
 --- !u!1 &705507993
 GameObject:
