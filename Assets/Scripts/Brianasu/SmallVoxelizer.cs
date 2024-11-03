@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class SmallVoxelizer : MonoBehaviour
 {
-
-    public GameObject targetObject; // The prefab or GameObject to voxelize
-    public float voxelSize = 0.1f; // Size of each voxel
-    private int[,,] voxelGrid;
+    [SerializeField] bool spheresVisible;
+    [SerializeField] float sphereRadius;
+    [SerializeField] float voxelResolution;
+    [SerializeField] GameObject targetObject; // The prefab or GameObject to voxelize
+    GameObject[,,] voxelList;
+    Vector3 spawnPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -19,17 +21,60 @@ public class SmallVoxelizer : MonoBehaviour
         Vector3 min = bounds.min + targetObject.transform.position;
         Vector3 max = bounds.max + targetObject.transform.position;
 
-        int numVoxelsX = Mathf.CeilToInt((max.x - min.x) / voxelSize);
-        int numVoxelsY = Mathf.CeilToInt((max.y - min.y) / voxelSize);
-        int numVoxelsZ = Mathf.CeilToInt((max.z - min.z) / voxelSize);
+        int numVoxelsX = Mathf.CeilToInt((max.x - min.x) / voxelResolution);
+        int numVoxelsY = Mathf.CeilToInt((max.y - min.y) / voxelResolution);
+        int numVoxelsZ = Mathf.CeilToInt((max.z - min.z) / voxelResolution);
 
-        voxelGrid = new int[numVoxelsX,numVoxelsY,numVoxelsZ];
+        voxelList = new GameObject[numVoxelsX, numVoxelsY, numVoxelsZ];
 
 
         var vxl = new Voxeliser(bounds, numVoxelsX, numVoxelsY, numVoxelsZ);
         vxl.Voxelize(targetObject.transform);
         var data = vxl.VoxelMap;
-        Debug.Log(data);
+
+        for (int z = 0; z < numVoxelsZ; z++)
+        {
+            for (int y = 0; y < numVoxelsY; y++)
+            {
+                for (int x = 0; x < numVoxelsX; x++)
+                {
+                    GameObject voxel = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    voxelList[x, y, z] = voxel;
+                    voxelList[x, y, z].transform.parent = transform;
+
+                    Vector3 voxelCenter = GetVoxelWorldPosition(new Vector3Int(x, y, z));
+                    voxelList[x, y, z].transform.position = voxelCenter;
+
+                    // Scale spheres based on resolution and radius
+                    voxelList[x, y, z].transform.localScale =
+                        new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+
+                    Renderer sphereRenderer = voxel.GetComponent<Renderer>();
+
+                    if (data[x][y][z])
+                    {
+                        sphereRenderer.material.color = Color.red;
+                    }
+                    else if (!data[x][y][z])
+                    {
+                        Destroy(voxel);
+                    }
+
+                    sphereRenderer.enabled = spheresVisible;
+                }
+            }
+        }
+    }
+
+    private Vector3 GetVoxelWorldPosition(Vector3Int voxelIndex)
+    {
+        // Calculate the local position of the voxel based on its index
+        Vector3 voxelPosition = new Vector3(voxelIndex.x * voxelResolution,
+                                             voxelIndex.y * voxelResolution,
+                                             voxelIndex.z * voxelResolution);
+
+        // Return the world position by adding the local origin
+        return spawnPosition + voxelPosition;
     }
 
     // Update is called once per frame
@@ -37,28 +82,4 @@ public class SmallVoxelizer : MonoBehaviour
     {
 
     }
-
-
-    /*private void OnDrawGizmos()
-    {
-        if (!Application.isPlaying) return;
-
-        Gizmos.color = Color.red;
-
-        for (int z = 0; z < voxelGrid.GetLength(2); z++)
-        {
-            for (int y = 0; y < voxelGrid.GetLength(1); y++)
-            {
-                for (int x = 0; x < voxelGrid.GetLength(0); x++)
-                {
-                    Vector3Int voxelIndex = new Vector3Int(x, y, z);
-                    if (voxelGrid[x, y, z] == 1)
-                    {
-                        Gizmos.DrawSphere(data.transform, voxelSize / 5);
-                    }
-                }
-            }
-        }
-    }*/
-
 }

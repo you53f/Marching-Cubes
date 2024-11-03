@@ -10,10 +10,10 @@ public class ChunkingVoxelizer : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] public int chunkGridLines;
-    [SerializeField] private bool spheresVisible;
     [SerializeField] public float voxelResolution;
     [SerializeField] private float sphereRadius;
     [SerializeField] private int voxelBuffer;
+    [SerializeField] bool Visualize;
 
     public GameObject targetObject; // The prefab or GameObject to voxelize
 
@@ -31,17 +31,13 @@ public class ChunkingVoxelizer : MonoBehaviour
     int numVoxelsX;
     int numVoxelsY;
     int numVoxelsZ;
-
-    private bool editVoxelDisabled;
-    private float[,,,] chunkedVoxels;
+    private float[,,,,,] chunkedVoxels;
 
     public void Start()
     {
-        editVoxelDisabled = CheckForEditVoxels();
-        if (editVoxelDisabled)
-        {//StartVoxels();}
-        }
     }
+
+
     public void StartVoxels()
     {
         // Set localOrigin to the minimum bounds of the mesh in world space
@@ -53,32 +49,7 @@ public class ChunkingVoxelizer : MonoBehaviour
 
     }
 
-    private bool CheckForEditVoxels()
-    {
-        GameObject editVoxels = GameObject.Find("Edit Voxels");
-        bool state;
-        // Check if the GameObject exists and is enabled
-        if (editVoxels != null)
-        {
-            if (editVoxels.activeInHierarchy)
-            {
-                state = false;
-                //Debug.Log("Yes Edit Voxels");
-            }
-            else
-            {
-                state = true;
-                //Debug.Log("No Edit Voxels");
-            }
-        }
-        else
-        {
-            state = true;
-            //Debug.Log("No Edit Voxels");
-        }
-        return state;
-    }
-
+    #region Original Voxelization Array
     public void VoxelizeMesh()
     {
         MeshFilter meshFilter = targetObject.GetComponent<MeshFilter>();
@@ -112,7 +83,7 @@ public class ChunkingVoxelizer : MonoBehaviour
         voxelGrid = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
 
         // Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
-        // Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
+        Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
 
 
         // Loop through each voxel
@@ -134,12 +105,15 @@ public class ChunkingVoxelizer : MonoBehaviour
             }
         }
 
-        int offsetX = voxelBuffer / 2;
-        int offsetY = voxelBuffer / 2;
-        int offsetZ = voxelBuffer / 2;
+        // To be used in CenterVoxels
+        int offsetX = Mathf.FloorToInt(voxelBuffer / 2);
+        int offsetY = Mathf.FloorToInt(voxelBuffer / 2);
+        int offsetZ = Mathf.FloorToInt(voxelBuffer / 2);
 
-        CenterVoxels(numVoxelsX, numVoxelsY, numVoxelsZ, centeredVoxels, offsetX, offsetY, offsetZ);
+        CenterVoxels(numVoxelsX, numVoxelsY, numVoxelsZ, offsetX, offsetY, offsetZ);
     }
+
+    #endregion
     public int AdjustToNextDivisible(int number)
     {
         // Check if the number is divisible by chunkGridLines
@@ -157,11 +131,9 @@ public class ChunkingVoxelizer : MonoBehaviour
         }
     }
 
-    private void CenterVoxels(int numVoxelsX, int numVoxelsY, int numVoxelsZ, float[,,] centeredVoxels,
-    int offsetX, int offsetY, int offsetZ)
+    #region  Centering Voxels
+    private void CenterVoxels(int numVoxelsX, int numVoxelsY, int numVoxelsZ, int offsetX, int offsetY, int offsetZ)
     {
-        GameObject[,,] dataPointCube = new GameObject[numVoxelsX, numVoxelsY, numVoxelsZ];
-
         centeredVoxels = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
 
         // Centering Voxels
@@ -175,61 +147,87 @@ public class ChunkingVoxelizer : MonoBehaviour
                     int newY = y + offsetY;
                     int newZ = z + offsetZ;
 
-                    if (newX >= 0 && newX < numVoxelsX && newY >= 0 && newY < numVoxelsY && newZ >= 0 && newZ < numVoxelsZ)
+                    if (newX < numVoxelsX && newY < numVoxelsY && newZ < numVoxelsZ)
                     {
                         centeredVoxels[newX, newY, newZ] = voxelGrid[x, y, z];
                     }
                 }
             }
         }
-        for (int z = 0; z < numVoxelsZ; z++)
+        #endregion
+
+        #region Visualization
+
+        if (Visualize)
         {
-            for (int y = 0; y < numVoxelsY; y++)
+            // To hold the spheres for visualization
+            GameObject[,,] dataPointSphere = new GameObject[numVoxelsX, numVoxelsY, numVoxelsZ];
+
+            for (int z = 0; z < numVoxelsZ; z++)
             {
-                for (int x = 0; x < numVoxelsX; x++)
+                for (int y = 0; y < numVoxelsY; y++)
                 {
-
-                    GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    dataPointCube[x, y, z] = sphere;
-                    dataPointCube[x, y, z].transform.parent = this.transform;
-
-                    // Set position directly to voxelCenter
-                    Vector3Int index = new Vector3Int(x, y, z);
-                    Vector3 voxelCenter = GetVoxelWorldPosition(index);
-                    dataPointCube[x, y, z].transform.position = voxelCenter;
-
-                    // Scale spheres based on resolution and radius
-                    dataPointCube[x, y, z].transform.localScale =
-                        new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
-
-                    Renderer sphereRenderer = sphere.GetComponent<Renderer>();
-
-                    // Change color based on occupancy
-                    if (centeredVoxels[x, y, z] == 1)
+                    for (int x = 0; x < numVoxelsX; x++)
                     {
-                        sphereRenderer.material.color = Color.red;
-                    }
-                    else if (centeredVoxels[x, y, z] == 0)
-                    {
-                        sphereRenderer.material.color = Color.black;
-                    }
+                        if (centeredVoxels[x, y, z] == 1)
+                        {
+                            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                            dataPointSphere[x, y, z] = sphere;
+                            dataPointSphere[x, y, z].transform.parent = this.transform;
 
-                    sphereRenderer.enabled = spheresVisible;
+                            // Set position directly to voxelCenter
+                            Vector3Int index = new Vector3Int(x, y, z);
+                            Vector3 voxelCenter = GetVoxelWorldPosition(index);
+                            dataPointSphere[x, y, z].transform.position = voxelCenter;
 
-                    // Debug.Log($"centered voxels at {x},{y},{z} is {centeredVoxels[x, y, z]}");
+                            // Scale spheres based on resolution and radius
+                            dataPointSphere[x, y, z].transform.localScale =
+                                new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+
+                            Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+
+                            sphereRenderer.material.color = Color.red;
+                        }
+
+
+                        else if (centeredVoxels[x, y, z] == 0)
+                        {
+                            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                            dataPointSphere[x, y, z] = sphere;
+                            dataPointSphere[x, y, z].transform.parent = this.transform;
+
+                            // Set position directly to voxelCenter
+                            Vector3Int index = new Vector3Int(x, y, z);
+                            Vector3 voxelCenter = GetVoxelWorldPosition(index);
+                            dataPointSphere[x, y, z].transform.position = voxelCenter;
+
+                            // Scale spheres based on resolution and radius
+                            dataPointSphere[x, y, z].transform.localScale =
+                                new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+
+                            Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+
+                            sphereRenderer.material.color = Color.black;
+                        }
+
+                        // Debug.Log($"centered voxels at {x},{y},{z} is {centeredVoxels[x, y, z]}");
+                    }
                 }
             }
         }
+        #endregion
 
         chunkedVoxels = ChunkingData(centeredVoxels);
+
     }
 
-    private float[,,,] ChunkingData(float[,,] data)
+    #region Chunking Voxels
+    private float[,,,,,] ChunkingData(float[,,] data)
     {
         if (data == null)
         {
-            Debug.LogError("Input data array is null.");
-            return null; // or handle as appropriate
+            Debug.LogError("Input data array for chunking is null.");
+            return null;
         }
 
         chunksInX = numVoxelsX / chunkGridLines;
@@ -237,48 +235,99 @@ public class ChunkingVoxelizer : MonoBehaviour
         chunksInZ = numVoxelsZ / chunkGridLines;
         totalChunks = chunksInX * chunksInY * chunksInZ;
 
-        // Debug.Log($"Chunks in X: {chunksInX} | Y: {chunksInY} | Z: {chunksInZ}");
-        // Debug.Log($"Total Chunks is {totalChunks}");
+        Debug.Log($"Chunks in X: {chunksInX} | Y: {chunksInY} | Z: {chunksInZ}");
+        Debug.Log($"Total Chunks is {totalChunks}");
 
-        float[,,,] chunked = new float[totalChunks, chunkGridLines, chunkGridLines, chunkGridLines];
+        float[,,,,,] chunked = new float[chunksInX, chunksInY, chunksInZ, chunkGridLines, chunkGridLines, chunkGridLines];
 
-        // int dim1 = chunked.GetLength(0);
-        // int dim2 = chunked.GetLength(1);
-        // int dim3 = chunked.GetLength(2);
-        // int dim4 = chunked.GetLength(3);
-
-        // Debug.Log($"chunked Dimensions are {dim1}, {dim2}, {dim3} and {dim4}");
-
-        for (int w = 0; w < totalChunks; w++)
+        for (int z = 0; z < numVoxelsZ; z++)
         {
-            // Debug.Log($"Transferring Data of chunk {w}");
-            for (int z = 0; z < chunkGridLines; z++)
+            for (int y = 0; y < numVoxelsY; y++)
             {
-                // Debug.Log($"in Z number {z}");
-                for (int y = 0; y < chunkGridLines; y++)
+                for (int x = 0; x < numVoxelsX; x++)
                 {
-                    // Debug.Log($"in Y number {y}");
-                    for (int x = 0; x < chunkGridLines; x++)
-                    {
-                        // Debug.Log($"in X number {x}");
+                    int chunkIndexX = Mathf.FloorToInt(x / chunkGridLines);
+                    int chunkIndexY = Mathf.FloorToInt(y / chunkGridLines);
+                    int chunkIndexZ = Mathf.FloorToInt(z / chunkGridLines);
 
-                        int xGlobal = (w % chunksInX) * chunkGridLines + x;
-                        int yGlobal = ((w / chunksInX) % chunksInY) * chunkGridLines + y;
-                        int zGlobal = (w / (chunksInX * chunksInY)) * chunkGridLines + z;
+                    // Debug.Log($"Chunk Index X is {chunkIndexX}");
+                    // Debug.Log($"Chunk Index X is {chunkIndexX}");
+                    // Debug.Log($"Chunk Index X is {chunkIndexX}");
 
-                        // Ensure we don't go out of bounds
-                        if (xGlobal < numVoxelsX && yGlobal < numVoxelsY && zGlobal < numVoxelsZ)
-                        {
-                            chunked[w, x, y, z] = data[xGlobal, yGlobal, zGlobal];
-                        }
+                    int i = x % chunkGridLines;
+                    int j = y % chunkGridLines;
+                    int k = z % chunkGridLines;
+                    
+                    chunked[chunkIndexX, chunkIndexY, chunkIndexZ, i, j, k] = data[x, y, z];
 
-                        // Debug.Log($"centered {data[xGlobal, yGlobal, zGlobal]} of {x},{y},{z} is now chunk data {w},{x},{y},{z} with value {chunked[w, x, y, z]}");
-                    }
+                    // Debug.Log($"centered {data[x, y, z]} of {x},{y},{z} is now chunk data {chunkIndexX},{chunkIndexY},{chunkIndexZ},{i},{j},{k} with value {chunked[chunkIndexX, chunkIndexY, chunkIndexZ, i, j, k]}");
+
                 }
             }
         }
+
         return chunked;
     }
+
+    #endregion
+
+    /* Perplexity Method of Chunking   
+
+    private float[,,,] ChunkingData(float[,,] data)
+   {
+       if (data == null)
+       {
+           Debug.LogError("Input data array is null.");
+           return null; // or handle as appropriate
+       }
+
+       chunksInX = numVoxelsX / chunkGridLines;
+       chunksInY = numVoxelsY / chunkGridLines;
+       chunksInZ = numVoxelsZ / chunkGridLines;
+       totalChunks = chunksInX * chunksInY * chunksInZ;
+
+       // Debug.Log($"Chunks in X: {chunksInX} | Y: {chunksInY} | Z: {chunksInZ}");
+       // Debug.Log($"Total Chunks is {totalChunks}");
+
+       float[,,,] chunked = new float[totalChunks, chunkGridLines, chunkGridLines, chunkGridLines];
+
+       // int dim1 = chunked.GetLength(0);
+       // int dim2 = chunked.GetLength(1);
+       // int dim3 = chunked.GetLength(2);
+       // int dim4 = chunked.GetLength(3);
+
+       // Debug.Log($"chunked Dimensions are {dim1}, {dim2}, {dim3} and {dim4}");
+
+       for (int w = 0; w < totalChunks; w++)
+       {
+           // Debug.Log($"Transferring Data of chunk {w}");
+           for (int z = 0; z < chunkGridLines; z++)
+           {
+               // Debug.Log($"in Z number {z}");
+               for (int y = 0; y < chunkGridLines; y++)
+               {
+                   // Debug.Log($"in Y number {y}");
+                   for (int x = 0; x < chunkGridLines; x++)
+                   {
+                       // Debug.Log($"in X number {x}");
+
+                       int xGlobal = (w % chunksInX) * chunkGridLines + x;
+                       int yGlobal = ((w / chunksInX) % chunksInY) * chunkGridLines + y;
+                       int zGlobal = (w / (chunksInX * chunksInY)) * chunkGridLines + z;
+
+                       // Ensure we don't go out of bounds
+                       if (xGlobal < numVoxelsX && yGlobal < numVoxelsY && zGlobal < numVoxelsZ)
+                       {
+                           chunked[w, x, y, z] = data[xGlobal, yGlobal, zGlobal];
+                       }
+
+                       // Debug.Log($"centered {data[xGlobal, yGlobal, zGlobal]} of {x},{y},{z} is now chunk data {w},{x},{y},{z} with value {chunked[w, x, y, z]}");
+                   }
+               }
+           }
+       }
+       return chunked;
+   } */
     private float IsVoxelOccupied(Vector3 voxelCenter)
     {
         // Use OverlapSphere to check if the voxel sphere overlaps with the target object's collider
@@ -290,17 +339,12 @@ public class ChunkingVoxelizer : MonoBehaviour
         }
         return 0;
     }
-
-    public int GetGridLines()
-    {
-        return chunkGridLines;
-    }
     public float[,,] GetVoxelGrid()
     {
         return centeredVoxels;
     }
 
-    public float[,,,] GetChunkedVoxels()
+    public float[,,,,,] GetChunkedVoxels()
     {
         return chunkedVoxels;
     }

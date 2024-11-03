@@ -80,7 +80,7 @@ public struct Cube
         uvs.Clear();
 
         int configuration = GetConfiguration(isoValue, cornerValues);
-        //Interpolate(isoValue, cornerValues);
+        Interpolate(isoValue, cornerValues);
         TrianglesLookUp(configuration);
 
         // Debug.Log($"Configuration = {configuration}");

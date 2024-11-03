@@ -94,32 +94,43 @@ public class EditVoxels : MonoBehaviour
                     //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    dataPointCube[x, y, z] = cube;
-                    dataPointCube[x, y, z].transform.parent = this.transform;
-                    dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
-                    dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
-                    dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
 
-                    MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
-                    
+
                     if (gridValues[x, y, z] == 1)
                     {
+                        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        dataPointCube[x, y, z] = cube;
+                        dataPointCube[x, y, z].transform.parent = this.transform;
+                        dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                        dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+                        dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
+
+                        MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
                         meshRenderer.material.color = Color.red;
+
+                        meshRenderer.enabled = boxesVisible;
                     }
-                    else if (gridValues[x, y, z] == 0)
-                    {
-                        meshRenderer.material.color = Color.black;
-                    }
-                    meshRenderer.enabled = boxesVisible;
+                    // else
+                    // {
+                    //     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    //     dataPointCube[x, y, z] = cube;
+                    //     dataPointCube[x, y, z].transform.parent = this.transform;
+                    //     dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                    //     dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+                    //     dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
+
+                    //     MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
+                    //     meshRenderer.material.color = Color.black;
+
+                    //     meshRenderer.enabled = boxesVisible;
+                    // }
                 }
             }
         }
 
-        volumeGrid = new VolumeGrid(gridLinesx - 1,gridLinesy-1, gridLinesz-1, gridScale, isoValue);
+        volumeGrid = new VolumeGrid(gridLinesx - 1, gridLinesy - 1, gridLinesz - 1, gridScale, isoValue);
 
         GenerateMesh();
-        RemoveCubes(dataPointCube,0f);
     }
 
     // What's responsible for scalar field editing
@@ -177,7 +188,7 @@ public class EditVoxels : MonoBehaviour
     {
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-        
+
         vertices.Clear();
         triangles.Clear();
 
@@ -215,8 +226,13 @@ public class EditVoxels : MonoBehaviour
                 {
                     if (gridValues[x, y, z] < isoValue - bufferBeforeDestroy)
                     {
-                        Destroy(dataPointCube[x, y, z]);
-                        //Debug.Log($"Destroyed Cube [{x}, {y}, {z}]");
+                        if (dataPointCube[x, y, z] != null)
+                        {
+                            Destroy(dataPointCube[x, y, z]);
+                            //Debug.Log($"Destroyed Cube [{x}, {y}, {z}]");
+                        }
+                        //else
+                            //Debug.Log($"already destroyed cube [{x},{y},{z}]");
                     }
                 }
             }
@@ -224,13 +240,13 @@ public class EditVoxels : MonoBehaviour
     }
 
 
-    /* private void GenerateCollider()
+    private void GenerateCollider()
     {
-        if(filter.TryGetComponent(out MeshCollider meshCollider))
-        meshCollider.sharedMesh = mesh;
+        if (filter.TryGetComponent(out MeshCollider meshCollider))
+            meshCollider.sharedMesh = mesh;
         else
-        filter.gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
-    } */
+            filter.gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
+    }
 
     private Vector3 GridToWorldPosition(int x, int y, int z)
     {
