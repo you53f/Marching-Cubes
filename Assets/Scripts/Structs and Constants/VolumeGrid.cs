@@ -19,6 +19,9 @@ public struct VolumeGrid
         triangles = new List<int>();
         uvs = new List<Vector2>();
 
+        Debug.Log($"cubes: {numberofCubesX} x {numberofCubesY} x {numberofCubesZ}");
+        Debug.Log($"cubes total: {numberofCubesX*numberofCubesY*numberofCubesZ}");
+
         this.isoValue = isoValue;
 
         for (int z = 0; z < numberofCubesZ; z++)
@@ -46,9 +49,7 @@ public struct VolumeGrid
         uvs.Clear();
 
         int triangleStartIndex = 0;
-
-        //int cubesnum = cubes.GetLength(0);
-        //Debug.Log("we have " + cubesnum + " cubes in each direction");
+        
 
         for (int z = 0; z < cubes.GetLength(2); z++)
         {
@@ -85,24 +86,6 @@ public struct VolumeGrid
                 }
             }
         }
-
-        //Debug.Log("Vertices World Position: " + vertices.Count);
- /*        foreach (Vector3 element in vertices)
-        {
-            Debug.Log("Vertex " + element);
-            
-            GameObject vertex = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            vertex.transform.localPosition = element;
-            vertex.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-            Material redMaterial = new Material(Shader.Find("Standard"));
-            redMaterial.color = Color.red;
-            vertex.GetComponent<Renderer>().material = redMaterial;
-        } 
-        Debug.Log("Traingles List: " + triangles.Count);
-        foreach (int element in triangles)
-        {
-            Debug.Log("Triangle " + element);
-        } */
     }
 
     public int[] GetTriangles()

@@ -10,6 +10,7 @@ public class Voxelizer : MonoBehaviour
     [SerializeField] private float sphereRadius;
     [SerializeField] private int voxelBuffer;
     public GameObject targetObject; // The prefab or GameObject to voxelize
+    [SerializeField] bool managerInTheScene;
 
 
     private float[,,] voxelGrid; // 3D location of each voxel represented by an integer
@@ -22,7 +23,8 @@ public class Voxelizer : MonoBehaviour
 
     public void Start()
     {
-        // StartVoxels();
+        if(managerInTheScene)
+        StartVoxels();
     }
 
     public void StartVoxels()
@@ -132,42 +134,59 @@ public class Voxelizer : MonoBehaviour
                 }
             }
         }
-        // for (int z = 0; z < numVoxelsZ; z++)
-        // {
-        //     for (int y = 0; y < numVoxelsY; y++)
-        //     {
-        //         for (int x = 0; x < numVoxelsX; x++)
-        //         {
 
-        //             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        //             dataPointCube[x, y, z] = sphere;
-        //             dataPointCube[x, y, z].transform.parent = this.transform;
+        if(spheresVisible)
+        {
+        for (int z = 0; z < numVoxelsZ; z++)
+        {
+            for (int y = 0; y < numVoxelsY; y++)
+            {
+                for (int x = 0; x < numVoxelsX; x++)
+                {
 
-        //             // Set position directly to voxelCenter
-        //             Vector3Int index = new Vector3Int(x, y, z);
-        //             Vector3 voxelCenter = GetVoxelWorldPosition(index);
-        //             dataPointCube[x, y, z].transform.position = voxelCenter;
+                    
 
-        //             // Scale spheres based on resolution and radius
-        //             dataPointCube[x, y, z].transform.localScale =
-        //                 new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+                    // Change color based on occupancy
+                    if (centeredVoxels[x, y, z] == 1)
+                    {
+                        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    dataPointCube[x, y, z] = sphere;
+                    dataPointCube[x, y, z].transform.parent = this.transform;
 
-        //             Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+                    // Set position directly to voxelCenter
+                    Vector3Int index = new Vector3Int(x, y, z);
+                    Vector3 voxelCenter = GetVoxelWorldPosition(index);
+                    dataPointCube[x, y, z].transform.position = voxelCenter;
 
-        //             // Change color based on occupancy
-        //             if (centeredVoxels[x, y, z] == 1)
-        //             {
-        //                 sphereRenderer.material.color = Color.red;
-        //             }
-        //             else if (centeredVoxels[x, y, z] == 0)
-        //             {
-        //                 sphereRenderer.material.color = Color.black;
-        //             }
+                    // Scale spheres based on resolution and radius
+                    dataPointCube[x, y, z].transform.localScale =
+                        new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
 
-        //             sphereRenderer.enabled = spheresVisible;
-        //         }
-        //     }
-        // }
+                    Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+                    sphereRenderer.material.color = Color.red;
+                    }
+                    else if (centeredVoxels[x, y, z] == 0)
+                    {
+                        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    dataPointCube[x, y, z] = sphere;
+                    dataPointCube[x, y, z].transform.parent = this.transform;
+
+                    // Set position directly to voxelCenter
+                    Vector3Int index = new Vector3Int(x, y, z);
+                    Vector3 voxelCenter = GetVoxelWorldPosition(index);
+                    dataPointCube[x, y, z].transform.position = voxelCenter;
+
+                    // Scale spheres based on resolution and radius
+                    dataPointCube[x, y, z].transform.localScale =
+                        new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+
+                    Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+                    sphereRenderer.material.color = Color.black;
+                    }
+                }
+            }
+        }
+        }
     }
     private int IsVoxelOccupied(Vector3 voxelCenter)
     {

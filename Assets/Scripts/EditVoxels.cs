@@ -39,19 +39,19 @@ public class EditVoxels : MonoBehaviour
     private float[,,] voxelGridValues;
     private float[,,] gridValues;
     GameObject[,,] dataPointCube;
-    private Voxelizer voxelizer;
+    private ScrawkVoxelizer scrawkVoxelizer;
 
     private void Awake()
     {
         InputManager.onTouching += TouchingCallback;
-        voxelizer = FindObjectOfType<Voxelizer>();
-        voxelizer.StartVoxels();
-        voxelGridValues = voxelizer.GetVoxelGrid();
+        scrawkVoxelizer = FindObjectOfType<ScrawkVoxelizer>();
+        scrawkVoxelizer.StartVoxels();
+        voxelGridValues = scrawkVoxelizer.GetVoxelGrid();
         gridLines.x = voxelGridValues.GetLength(0);
         gridLines.y = voxelGridValues.GetLength(1);
         gridLines.z = voxelGridValues.GetLength(2);
         //Debug.Log($"Most Grid Lines = {gridLines}");
-        gridScale = voxelizer.voxelResolution;
+        gridScale = scrawkVoxelizer.voxelResolution;
 
         // Uncomment below for testing with no Chunks
         Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);

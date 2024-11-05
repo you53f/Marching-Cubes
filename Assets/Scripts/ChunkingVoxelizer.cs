@@ -1,10 +1,6 @@
-using System;
-using System.Numerics;
-using Unity.VisualScripting;
 using UnityEngine;
-using Vector4 = UnityEngine.Vector4;
+using MeshVoxelizerProject;
 using Vector3 = UnityEngine.Vector3;
-using Vector2 = UnityEngine.Vector2;
 
 public class ChunkingVoxelizer : MonoBehaviour
 {
@@ -14,6 +10,7 @@ public class ChunkingVoxelizer : MonoBehaviour
     [SerializeField] private float sphereRadius;
     [SerializeField] private int voxelBuffer;
     [SerializeField] bool Visualize;
+    [SerializeField] bool managerInTheScene;
 
     public GameObject targetObject; // The prefab or GameObject to voxelize
 
@@ -32,9 +29,13 @@ public class ChunkingVoxelizer : MonoBehaviour
     int numVoxelsY;
     int numVoxelsZ;
     private float[,,,,,] chunkedVoxels;
+    
+    private MeshVoxelizer m_voxelizer;
 
     public void Start()
     {
+        if(!managerInTheScene)
+        StartVoxels();
     }
 
 
@@ -42,11 +43,7 @@ public class ChunkingVoxelizer : MonoBehaviour
     {
         // Set localOrigin to the minimum bounds of the mesh in world space
         localOrigin = targetObject.GetComponent<MeshFilter>().sharedMesh.bounds.min + targetObject.transform.position;
-        // Debug.Log($"Local origin is {localOrigin}");
         VoxelizeMesh();
-        // tempGrid = GetVoxelGrid();
-        // Debug.Log($"Voxels from method is {tempGrid.GetLength(0)}, {tempGrid.GetLength(1)},and {tempGrid.GetLength(2)}");
-
     }
 
     #region Original Voxelization Array
@@ -80,37 +77,24 @@ public class ChunkingVoxelizer : MonoBehaviour
 
 
         // Create a 3D array to hold voxel data
-        voxelGrid = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
+        voxelGrid = new float[vX, vY, vZ];
 
-        // Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
+        Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
         Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
 
+        m_voxelizer = new MeshVoxelizer(vX, vY, vZ);
+        Box3 boundsb3 = new Box3(mesh.bounds.min, mesh.bounds.max);
 
-        // Loop through each voxel
-        for (int z = 0; z < numVoxelsZ; z++)
-        {
-            for (int y = 0; y < numVoxelsY; y++)
-            {
-                for (int x = 0; x < numVoxelsX; x++)
-                {
-                    Vector3Int index = new Vector3Int(x, y, z);
-                    Vector3 voxelCenter = GetVoxelWorldPosition(index);
+        m_voxelizer.Voxelize(mesh.vertices, mesh.triangles, boundsb3);
 
-                    // Debug log for voxel center position
-                    //Debug.Log($"Voxel Center at Index ({x}, {y}, {z}): {voxelCenter}");
-
-                    // Check if the voxel intersects with the mesh
-                    voxelGrid[x, y, z] = IsVoxelOccupied(voxelCenter);
-                }
-            }
-        }
+        voxelGrid = m_voxelizer.Voxels;
 
         // To be used in CenterVoxels
         int offsetX = Mathf.FloorToInt(voxelBuffer / 2);
         int offsetY = Mathf.FloorToInt(voxelBuffer / 2);
         int offsetZ = Mathf.FloorToInt(voxelBuffer / 2);
 
-        CenterVoxels(numVoxelsX, numVoxelsY, numVoxelsZ, offsetX, offsetY, offsetZ);
+        CenterVoxels(vX, vY, vZ, offsetX, offsetY, offsetZ);
     }
 
     #endregion
@@ -132,16 +116,16 @@ public class ChunkingVoxelizer : MonoBehaviour
     }
 
     #region  Centering Voxels
-    private void CenterVoxels(int numVoxelsX, int numVoxelsY, int numVoxelsZ, int offsetX, int offsetY, int offsetZ)
+    private void CenterVoxels(int vX, int vY, int vZ, int offsetX, int offsetY, int offsetZ)
     {
         centeredVoxels = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
 
         // Centering Voxels
-        for (int z = 0; z < numVoxelsZ; z++)
+        for (int z = 0; z < vZ; z++)
         {
-            for (int y = 0; y < numVoxelsY; y++)
+            for (int y = 0; y < vY; y++)
             {
-                for (int x = 0; x < numVoxelsX; x++)
+                for (int x = 0; x < vX; x++)
                 {
                     int newX = x + offsetX;
                     int newY = y + offsetY;

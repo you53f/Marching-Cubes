@@ -41,8 +41,6 @@ public class EditVoxelsChunked : MonoBehaviour
     
     private ChunkingVoxelizer chunkingVoxelizer;
 
-    bool chunksManagerDisabled;
-
 
     private void Awake()
     {

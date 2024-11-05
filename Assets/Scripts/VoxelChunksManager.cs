@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class VoxelChunksManager : MonoBehaviour
@@ -24,7 +21,6 @@ public class VoxelChunksManager : MonoBehaviour
     private int chunksInX;
     private int chunksInY;
     private int chunksInZ;
-    private int totalChunks;
 
 
 
@@ -55,8 +51,6 @@ public class VoxelChunksManager : MonoBehaviour
         chunksInX = voxelizer.chunksInX;
         chunksInY = voxelizer.chunksInY;
         chunksInZ = voxelizer.chunksInZ;
-
-        totalChunks = voxelizer.totalChunks;
 
         chunkedVoxels = voxelizer.GetChunkedVoxels();
 
