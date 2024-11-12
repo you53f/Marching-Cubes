@@ -169,13 +169,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topRightFrontValue: 2
-  topLeftFrontValue: 0
-  bottomLeftFrontValue: 0
-  bottomRightFrontValue: 0
-  topRightBackValue: 0
-  topLeftBackValue: 0
-  bottomLeftBackValue: 0
-  bottomRightBackValue: 0
+  topLeftFrontValue: 2
+  bottomLeftFrontValue: 2
+  bottomRightFrontValue: 2
+  topRightBackValue: 2
+  topLeftBackValue: 2
+  bottomLeftBackValue: 2
+  bottomRightBackValue: 2
   gridLength: 1
   isoValue: 1
   filter: {fileID: 966008668}

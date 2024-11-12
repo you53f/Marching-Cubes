@@ -53,42 +53,13 @@ public class EditVoxelsChunked : MonoBehaviour
         gridLines.z = voxelGridValues.GetLength(2);
         gridScale = chunkingVoxelizer.voxelResolution;
 
-        float[,,,,,] chunksData = chunkingVoxelizer.GetChunkedVoxels();
+        // float[,,,,,] chunksData = chunkingVoxelizer.GetChunkedVoxels();
 
-        // Uncomment below for testing with no Chunks
-        //Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy,chunksData);
-    
          }
 
     private void OnDestroy()
     {
         InputManager.onTouching -= TouchingCallback;
-    }
-
-    private bool CheckForVoxelChunksManager()
-    {
-        GameObject chunksManager = GameObject.Find("Chunks Manager");
-        bool state;
-        // Check if the GameObject exists and is enabled
-        if (chunksManager != null)
-        {
-            if (chunksManager.activeInHierarchy)
-            {
-                state = false;
-                //Debug.Log("Yes Chunks Manager");
-            }
-            else
-            {
-                state = true;
-                //Debug.Log("No Chunks Manager");
-            }
-        }
-        else
-        {
-            state = true;
-            //Debug.Log("No Chunks Manager");
-        }
-        return state;
     }
 
     public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
@@ -121,8 +92,6 @@ public class EditVoxelsChunked : MonoBehaviour
                 for (int x = 0; x < gridValues.GetLength(0); x++)
                 {
                     gridValues[x, y, z] = voxelGridValues[x, y, z];
-                    //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
-                    //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {gridValues[x,y,z]}");
 
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     dataPointCube[x, y, z] = cube;
@@ -238,10 +207,6 @@ public class EditVoxelsChunked : MonoBehaviour
         //RemoveCubes(dataPointCube, bufferBeforeDestroy);
     }
 
-    private void RemoveChunk()
-    {
-
-    }
     private void RemoveCubes(int x, int y, int z, float bufferBeforeDestroy)
     {
         if (gridValues[x, y, z] < isoValue - bufferBeforeDestroy)

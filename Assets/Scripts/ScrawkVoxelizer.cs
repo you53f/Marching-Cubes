@@ -81,19 +81,6 @@ public class ScrawkVoxelizer : MonoBehaviour
 
         voxelGrid = m_voxelizer.Voxels;
 
-        // for (int z = 0; z < vZ; z++)
-        // {
-        //     for (int y = 0; y < vY; y++)
-        //     {
-        //         for (int x = 0; x < vX; x++)
-        //         {
-        //             Debug.Log($"m_voxelizer [{x}, {y}, {z}] of value {m_voxelizer.Voxels[x, y, z]} is now voxelGrid [{x}, {y}, {z}] of value {voxelGrid[x, y, z]}");
-        //         }
-        //     }
-        // }
-
-        // Debug.Log("Allocation done to voxel grid");
-
         int offsetX = voxelBuffer / 2;
         int offsetY = voxelBuffer / 2;
         int offsetZ = voxelBuffer / 2;

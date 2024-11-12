@@ -46,7 +46,7 @@ public class ChunkingVoxelizer : MonoBehaviour
         VoxelizeMesh();
     }
 
-    #region Original Voxelization Array
+    #region Raw Voxels
     public void VoxelizeMesh()
     {
         MeshFilter meshFilter = targetObject.GetComponent<MeshFilter>();
@@ -115,7 +115,7 @@ public class ChunkingVoxelizer : MonoBehaviour
         }
     }
 
-    #region  Centering Voxels
+    #region  Centering
     private void CenterVoxels(int vX, int vY, int vZ, int offsetX, int offsetY, int offsetZ)
     {
         centeredVoxels = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
@@ -140,7 +140,7 @@ public class ChunkingVoxelizer : MonoBehaviour
         }
         #endregion
 
-        #region Visualization
+        #region Visuals
 
         if (Visualize)
         {
@@ -205,7 +205,7 @@ public class ChunkingVoxelizer : MonoBehaviour
 
     }
 
-    #region Chunking Voxels
+    #region Chunking
     private float[,,,,,] ChunkingData(float[,,] data)
     {
         if (data == null)

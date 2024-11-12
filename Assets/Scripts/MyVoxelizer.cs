@@ -1,9 +1,8 @@
 using System;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Temp : MonoBehaviour
+public class MyVoxelizer : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private bool spheresVisible;
@@ -11,7 +10,9 @@ public class Temp : MonoBehaviour
     [SerializeField] private float sphereRadius;
     [SerializeField] private int voxelBuffer;
     public GameObject targetObject; // The prefab or GameObject to voxelize
-    public static int triggerValue;
+    [SerializeField] bool managerInTheScene;
+
+
     private float[,,] voxelGrid; // 3D location of each voxel represented by an integer
     private float[,,] centeredVoxels;
     private Vector3 localOrigin; // The world position of the voxel at index (0, 0, 0)
@@ -22,6 +23,7 @@ public class Temp : MonoBehaviour
 
     public void Start()
     {
+        if(managerInTheScene)
         StartVoxels();
     }
 
@@ -34,6 +36,7 @@ public class Temp : MonoBehaviour
         // tempGrid = GetVoxelGrid();
         // Debug.Log($"Voxels from method is {tempGrid.GetLength(0)}, {tempGrid.GetLength(1)},and {tempGrid.GetLength(2)}");
     }
+
 
     public void VoxelizeMesh()
     {
@@ -83,21 +86,11 @@ public class Temp : MonoBehaviour
                     Vector3Int index = new Vector3Int(x, y, z);
                     Vector3 voxelCenter = GetVoxelWorldPosition(index);
 
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.position = voxelCenter;
-                    Rigidbody rb = cube.AddComponent<Rigidbody>();
-                    rb.isKinematic = true;
-                    BoxCollider collider = cube.GetComponent<BoxCollider>();
-                    collider.isTrigger = true;
-                    cube.AddComponent<CubeTrigger>();
+                    // Debug log for voxel center position
+                    //Debug.Log($"Voxel Center at Index ({x}, {y}, {z}): {voxelCenter}");
 
-                    Debug.Log($"voxel {x}, {y}, {z} has a trigger value of {triggerValue} ");
-
-                    if (triggerValue == 1)
-                        voxelGrid[x, y, z] = 1;
-                    else
-                        voxelGrid[x, y, z] = 0;
-
+                    // Check if the voxel intersects with the mesh
+                    voxelGrid[x, y, z] = IsVoxelOccupied(voxelCenter);
                 }
             }
         }
@@ -141,44 +134,93 @@ public class Temp : MonoBehaviour
                 }
             }
         }
-        // for (int z = 0; z < numVoxelsZ; z++)
-        // {
-        //     for (int y = 0; y < numVoxelsY; y++)
-        //     {
-        //         for (int x = 0; x < numVoxelsX; x++)
-        //         {
 
-        //             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        //             dataPointCube[x, y, z] = sphere;
-        //             dataPointCube[x, y, z].transform.parent = this.transform;
+        if(spheresVisible)
+        {
+        for (int z = 0; z < numVoxelsZ; z++)
+        {
+            for (int y = 0; y < numVoxelsY; y++)
+            {
+                for (int x = 0; x < numVoxelsX; x++)
+                {
 
-        //             // Set position directly to voxelCenter
-        //             Vector3Int index = new Vector3Int(x, y, z);
-        //             Vector3 voxelCenter = GetVoxelWorldPosition(index);
-        //             dataPointCube[x, y, z].transform.position = voxelCenter;
+                    
 
-        //             // Scale spheres based on resolution and radius
-        //             dataPointCube[x, y, z].transform.localScale =
-        //                 new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+                    // Change color based on occupancy
+                    if (centeredVoxels[x, y, z] == 1)
+                    {
+                        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    dataPointCube[x, y, z] = sphere;
+                    dataPointCube[x, y, z].transform.parent = this.transform;
 
-        //             Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+                    // Set position directly to voxelCenter
+                    Vector3Int index = new Vector3Int(x, y, z);
+                    Vector3 voxelCenter = GetVoxelWorldPosition(index);
+                    dataPointCube[x, y, z].transform.position = voxelCenter;
 
-        //             // Change color based on occupancy
-        //             if (centeredVoxels[x, y, z] == 1)
-        //             {
-        //                 sphereRenderer.material.color = Color.red;
-        //             }
-        //             else if (centeredVoxels[x, y, z] == 0)
-        //             {
-        //                 sphereRenderer.material.color = Color.black;
-        //             }
+                    // Scale spheres based on resolution and radius
+                    dataPointCube[x, y, z].transform.localScale =
+                        new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
 
-        //             sphereRenderer.enabled = spheresVisible;
-        //         }
-        //     }
-        // }
+                    Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+                    sphereRenderer.material.color = Color.red;
+                    }
+                    else if (centeredVoxels[x, y, z] == 0)
+                    {
+                        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    dataPointCube[x, y, z] = sphere;
+                    dataPointCube[x, y, z].transform.parent = this.transform;
+
+                    // Set position directly to voxelCenter
+                    Vector3Int index = new Vector3Int(x, y, z);
+                    Vector3 voxelCenter = GetVoxelWorldPosition(index);
+                    dataPointCube[x, y, z].transform.position = voxelCenter;
+
+                    // Scale spheres based on resolution and radius
+                    dataPointCube[x, y, z].transform.localScale =
+                        new Vector3(voxelResolution * sphereRadius, voxelResolution * sphereRadius, voxelResolution * sphereRadius);
+
+                    Renderer sphereRenderer = sphere.GetComponent<Renderer>();
+                    sphereRenderer.material.color = Color.black;
+                    }
+                }
+            }
+        }
+        }
     }
+    private int IsVoxelOccupied(Vector3 voxelCenter)
+    {
+        // Use OverlapSphere to check if the voxel sphere overlaps with the target object's collider
+        Collider[] colliders = Physics.OverlapSphere(voxelCenter, voxelResolution);
+        foreach (Collider collider in colliders)
+        {
+            if (collider == targetObject.GetComponent<Collider>())
+                return 1;
+        }
+        return 0;
 
+        // Initialize intersection count
+    //     int intersectionCount = 0 ;
+    //     Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
+
+    //     // Cast rays in each direction
+    // foreach (var direction in directions)
+    //     {
+    //         Ray ray = new Ray(voxelCenter,direction);
+    //         RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity); // Use RaycastAll to get all hits
+
+    //         // Count the number of hits
+    //         intersectionCount = hits.Length;
+    //     }
+
+    //     // Return 1 if occupied (odd intersections), otherwise return 0
+    //     int value;
+    //     if (intersectionCount == 0)
+    //     value =1;
+    //     else
+    //     value=0;
+    //     return value;
+    }
 
     public float[,,] GetVoxelGrid()
     {
@@ -223,25 +265,6 @@ public class Temp : MonoBehaviour
                     }
                 }
             }
-        }
-    }
-}
-
-class CubeTrigger : MonoBehaviour
-{
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Tooth"))
-
-        {
-            Temp.triggerValue = 1;
-            Debug.Log("Im inside");
-        }
-
-        else
-        {
-            Temp.triggerValue = 0;
-            Debug.Log("Im outside");
         }
     }
 }

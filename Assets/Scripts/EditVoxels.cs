@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
-using Unity.VisualScripting;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,7 +9,6 @@ using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
 using Vector2 = UnityEngine.Vector2;
-using System.IO.Compression;
 
 public class EditVoxels : MonoBehaviour
 {
@@ -94,8 +90,6 @@ public class EditVoxels : MonoBehaviour
                     //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
-
-
                     if (gridValues[x, y, z] == 1)
                     {
                         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -110,20 +104,6 @@ public class EditVoxels : MonoBehaviour
 
                         meshRenderer.enabled = boxesVisible;
                     }
-                    // else
-                    // {
-                    //     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    //     dataPointCube[x, y, z] = cube;
-                    //     dataPointCube[x, y, z].transform.parent = this.transform;
-                    //     dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
-                    //     dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
-                    //     dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
-
-                    //     MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
-                    //     meshRenderer.material.color = Color.black;
-
-                    //     meshRenderer.enabled = boxesVisible;
-                    // }
                 }
             }
         }
@@ -181,6 +161,8 @@ public class EditVoxels : MonoBehaviour
         if (shouldGenerate)
         {
             GenerateMesh();
+            
+        RemoveCubes(dataPointCube, bufferBeforeDestroy);
         }
     }
 
@@ -211,8 +193,6 @@ public class EditVoxels : MonoBehaviour
 
         //Video 16 -- GenerateCollider not implemented
         //GenerateCollider();
-
-        RemoveCubes(dataPointCube, bufferBeforeDestroy);
     }
 
 
