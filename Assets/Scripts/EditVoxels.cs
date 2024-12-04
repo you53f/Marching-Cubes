@@ -27,6 +27,7 @@ public class EditVoxels : MonoBehaviour
     private float gridScale;
     [SerializeField] private float gridCubeSizeFactor;
     [SerializeField] private float isoValue;
+    [SerializeField] private float randomizer;
     [SerializeField] private MeshFilter filter;
     private VolumeGrid volumeGrid;
     private List<Vector3> vertices = new List<Vector3>();
@@ -87,6 +88,7 @@ public class EditVoxels : MonoBehaviour
                 for (int x = 0; x < gridValues.GetLength(0); x++)
                 {
                     gridValues[x, y, z] = voxelGridValues[x, y, z];
+                    
                     //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
@@ -103,6 +105,7 @@ public class EditVoxels : MonoBehaviour
                         meshRenderer.material.color = Color.red;
 
                         meshRenderer.enabled = boxesVisible;
+                        gridValues[x, y, z] += Random.Range(0,randomizer);
                     }
                 }
             }
