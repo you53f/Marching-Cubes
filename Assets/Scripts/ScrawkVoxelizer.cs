@@ -63,14 +63,14 @@ public class ScrawkVoxelizer : MonoBehaviour
         numVoxelsY = AdjustToNextOdd(vY + voxelBuffer);
         numVoxelsZ = AdjustToNextOdd(vZ + voxelBuffer);
 
-        Debug.Log($"number of voxels is {numVoxelsX * numVoxelsY * numVoxelsZ}");
+        // Debug.Log($"number of voxels is {numVoxelsX * numVoxelsY * numVoxelsZ}");
 
         // Create a 3D array to hold voxel data
         voxelGrid = new float[vX, vY, vZ];
         centeredVoxels = new float[numVoxelsX, numVoxelsY, numVoxelsZ];
 
-        Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
-        Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
+        // Debug.Log($"Original Voxel Grid Size: {vX} x {vY} x {vZ}");
+        // Debug.Log($"Adjusted Voxel Grid Size: {numVoxelsX} x {numVoxelsY} x {numVoxelsZ}");
 
         GameObject[,,] dataPointCube = new GameObject[numVoxelsX, numVoxelsY, numVoxelsZ];
 
@@ -189,34 +189,36 @@ public class ScrawkVoxelizer : MonoBehaviour
         // Return the world position by adding the local origin
         return localOrigin + voxelPosition;
     }
-    private void OnDrawGizmos()
-    {
-        if (!Application.isPlaying) return;
 
-        Gizmos.color = Color.green;
+    
+    // private void OnDrawGizmos()
+    // {
+    //     if (!Application.isPlaying) return;
 
-        for (int z = 0; z < centeredVoxels.GetLength(2); z++)
-        {
-            for (int y = 0; y < centeredVoxels.GetLength(1); y++)
-            {
-                for (int x = 0; x < centeredVoxels.GetLength(0); x++)
-                {
-                    Vector3Int voxelIndex = new Vector3Int(x, y, z);
-                    if (centeredVoxels[x, y, z] == 1)
-                    {
-                        Gizmos.color = Color.red;
-                        Vector3 spawnPosition = GetVoxelWorldPosition(voxelIndex);
-                        Gizmos.DrawSphere(spawnPosition, voxelResolution / 5);
-                    }
-                    else if (centeredVoxels[x, y, z] == 0)
-                    {
+    //     Gizmos.color = Color.green;
 
-                        Gizmos.color = Color.black;
-                        Vector3 spawnPosition = GetVoxelWorldPosition(voxelIndex);
-                        Gizmos.DrawSphere(spawnPosition, voxelResolution / 5);
-                    }
-                }
-            }
-        }
-    }
+    //     for (int z = 0; z < centeredVoxels.GetLength(2); z++)
+    //     {
+    //         for (int y = 0; y < centeredVoxels.GetLength(1); y++)
+    //         {
+    //             for (int x = 0; x < centeredVoxels.GetLength(0); x++)
+    //             {
+    //                 Vector3Int voxelIndex = new Vector3Int(x, y, z);
+    //                 if (centeredVoxels[x, y, z] == 1)
+    //                 {
+    //                     Gizmos.color = Color.red;
+    //                     Vector3 spawnPosition = GetVoxelWorldPosition(voxelIndex);
+    //                     Gizmos.DrawSphere(spawnPosition, voxelResolution / 5);
+    //                 }
+    //                 else if (centeredVoxels[x, y, z] == 0)
+    //                 {
+
+    //                     Gizmos.color = Color.black;
+    //                     Vector3 spawnPosition = GetVoxelWorldPosition(voxelIndex);
+    //                     Gizmos.DrawSphere(spawnPosition, voxelResolution / 5);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }

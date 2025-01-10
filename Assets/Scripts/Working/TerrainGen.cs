@@ -44,20 +44,20 @@ public class TerrainGen : MonoBehaviour
 
     private void Awake()
     {
-        InputManager.onTouching += TouchingCallback;
-        
+        DualInputManager.onTouching += TouchingCallback;
+
         terrainChunksDisabled = CheckForTerrainChunks();
-        if(terrainChunksDisabled)
-        Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
+        if (terrainChunksDisabled)
+            Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
     }
 
     private void OnDestroy()
     {
-        InputManager.onTouching -= TouchingCallback;
+        DualInputManager.onTouching -= TouchingCallback;
     }
 
     private bool CheckForTerrainChunks()
-    {  
+    {
         GameObject terrainChunks = GameObject.Find("TerrainChunks");
         bool state;
         // Check if the GameObject exists and is enabled
@@ -120,6 +120,7 @@ public class TerrainGen : MonoBehaviour
                     dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
                     dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
                     dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
+                    dataPointCube[x, y, z].tag = "Cubes"; // Replace "YourTagName" with the desired tag
 
                     MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
                     meshRenderer.material.color = new Vector4(0.9f, 0.7f, 0f);
@@ -128,7 +129,7 @@ public class TerrainGen : MonoBehaviour
             }
         }
 
-        volumeGrid = new VolumeGrid(gridLines - 1,gridLines - 1,gridLines - 1, gridScale, isoValue);
+        volumeGrid = new VolumeGrid(gridLines - 1, gridLines - 1, gridLines - 1, gridScale, isoValue);
 
         GenerateMesh();
     }

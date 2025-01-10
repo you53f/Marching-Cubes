@@ -19,8 +19,8 @@ public struct VolumeGrid
         triangles = new List<int>();
         uvs = new List<Vector2>();
 
-        Debug.Log($"cubes: {numberofCubesX} x {numberofCubesY} x {numberofCubesZ}");
-        Debug.Log($"cubes total: {numberofCubesX*numberofCubesY*numberofCubesZ}");
+        // Debug.Log($"cubes: {numberofCubesX} x {numberofCubesY} x {numberofCubesZ}");
+        // Debug.Log($"cubes total: {numberofCubesX*numberofCubesY*numberofCubesZ}");
 
         this.isoValue = isoValue;
 

@@ -10,7 +10,7 @@ using Vector3 = UnityEngine.Vector3;
 
 using Vector2 = UnityEngine.Vector2;
 
-public class EditVoxels : MonoBehaviour
+public class Chunk3EditVoxels : MonoBehaviour
 {
     [Header("Brush Settings")]
     [SerializeField] private int brushSize;
@@ -41,7 +41,8 @@ public class EditVoxels : MonoBehaviour
     private void Awake()
     {
         InputManager.onTouching += TouchingCallback;
-        scrawkVoxelizer = FindObjectOfType<ScrawkVoxelizer>();
+        GameObject myObject = GameObject.Find("Scrawk3");
+        scrawkVoxelizer = myObject.GetComponent<ScrawkVoxelizer>();
         scrawkVoxelizer.StartVoxels();
         voxelGridValues = scrawkVoxelizer.GetVoxelGrid();
         gridLines.x = voxelGridValues.GetLength(0);
@@ -49,11 +50,9 @@ public class EditVoxels : MonoBehaviour
         gridLines.z = voxelGridValues.GetLength(2);
         //Debug.Log($"Most Grid Lines = {gridLines}");
         gridScale = scrawkVoxelizer.voxelResolution;
-        GameObject models = GameObject.Find("WholeMolarTop");
-        models.SetActive(false);
 
         // Uncomment below for testing with no Chunks
-        Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
+        // Initialize(boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
     }
 
     private void OnDestroy()
@@ -61,13 +60,9 @@ public class EditVoxels : MonoBehaviour
         InputManager.onTouching -= TouchingCallback;
     }
 
-    public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
+    public void Initialize(bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
     float gridCubeSizeFactor, float bufferBeforeDestroy)
     {
-        this.gridScale = gridScale;
-        this.gridLines.x = gridLinesx;
-        this.gridLines.y = gridLinesy;
-        this.gridLines.z = gridLinesz;
         this.boxesVisible = boxesVisible;
         this.brushSize = brushSize;
         this.brushStrength = brushStrength;
@@ -78,9 +73,9 @@ public class EditVoxels : MonoBehaviour
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-        dataPointCube = new GameObject[gridLinesx, gridLinesy, gridLinesz];
+        dataPointCube = new GameObject[gridLines.x,  gridLines.y, gridLines.z];
 
-        gridValues = new float[gridLinesx, gridLinesy, gridLinesz];
+        gridValues = new float[gridLines.x,  gridLines.y, gridLines.z];
         gridCubeSize = gridScale * gridCubeSizeFactor;
 
         for (int z = 0; z < gridValues.GetLength(2); z++)
@@ -113,7 +108,7 @@ public class EditVoxels : MonoBehaviour
             }
         }
 
-        volumeGrid = new VolumeGrid(gridLinesx - 1, gridLinesy - 1, gridLinesz - 1, gridScale, isoValue);
+        volumeGrid = new VolumeGrid(gridLines.x - 1,  gridLines.y - 1, gridLines.z - 1, gridScale, isoValue);
 
         GenerateMesh();
     }
