@@ -6,11 +6,12 @@ TagManager:
   tags:
   - Tooth
   - Cubes
+  - Handpiece
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Handpiece
   - Water
   - UI
   - 

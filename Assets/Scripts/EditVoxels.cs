@@ -37,10 +37,11 @@ public class EditVoxels : MonoBehaviour
     private float[,,] gridValues;
     GameObject[,,] dataPointCube;
     private ScrawkVoxelizer scrawkVoxelizer;
+    GameObject targetObject;
 
     private void Awake()
     {
-        InputManager.onTouching += TouchingCallback;
+        DualInputManager.onTouching += TouchingCallback;
         scrawkVoxelizer = FindObjectOfType<ScrawkVoxelizer>();
         scrawkVoxelizer.StartVoxels();
         voxelGridValues = scrawkVoxelizer.GetVoxelGrid();
@@ -52,13 +53,15 @@ public class EditVoxels : MonoBehaviour
         GameObject models = GameObject.Find("WholeMolarTop");
         models.SetActive(false);
 
+        targetObject = scrawkVoxelizer.targetObject;
+
         // Uncomment below for testing with no Chunks
         Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
     }
 
     private void OnDestroy()
     {
-        InputManager.onTouching -= TouchingCallback;
+        DualInputManager.onTouching -= TouchingCallback;
     }
 
     public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
@@ -90,7 +93,7 @@ public class EditVoxels : MonoBehaviour
                 for (int x = 0; x < gridValues.GetLength(0); x++)
                 {
                     gridValues[x, y, z] = voxelGridValues[x, y, z];
-                    
+
                     //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
@@ -101,19 +104,23 @@ public class EditVoxels : MonoBehaviour
                         dataPointCube[x, y, z].transform.parent = this.transform;
                         dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
                         dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
-                        dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
+                        // dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
 
                         MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
                         meshRenderer.material.color = Color.red;
 
                         meshRenderer.enabled = boxesVisible;
-                        gridValues[x, y, z] += Random.Range(0,randomizer);
+                        gridValues[x, y, z] += Random.Range(0, randomizer);
                     }
                 }
             }
         }
 
         volumeGrid = new VolumeGrid(gridLinesx - 1, gridLinesy - 1, gridLinesz - 1, gridScale, isoValue);
+
+        transform.position = targetObject.transform.position;
+        transform.localScale = targetObject.transform.localScale;
+        transform.rotation = targetObject.transform.rotation;
 
         GenerateMesh();
     }
@@ -166,8 +173,8 @@ public class EditVoxels : MonoBehaviour
         if (shouldGenerate)
         {
             GenerateMesh();
-            
-        RemoveCubes(dataPointCube, bufferBeforeDestroy);
+
+            RemoveCubes(dataPointCube, bufferBeforeDestroy);
         }
     }
 
@@ -192,10 +199,10 @@ public class EditVoxels : MonoBehaviour
         }
 
         mesh.uv = uvs;
+        mesh.RecalculateNormals();
 
         //Assigning the two lists to the mesh filter
         filter.mesh = mesh;
-
         //Video 16 -- GenerateCollider not implemented
         //GenerateCollider();
     }
@@ -217,7 +224,7 @@ public class EditVoxels : MonoBehaviour
                             //Debug.Log($"Destroyed Cube [{x}, {y}, {z}]");
                         }
                         //else
-                            //Debug.Log($"already destroyed cube [{x},{y},{z}]");
+                        //Debug.Log($"already destroyed cube [{x},{y},{z}]");
                     }
                 }
             }

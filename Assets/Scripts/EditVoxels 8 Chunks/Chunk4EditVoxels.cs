@@ -40,7 +40,7 @@ public class Chunk4EditVoxels : MonoBehaviour
 
     private void Awake()
     {
-        InputManager.onTouching += TouchingCallback;
+        DualInputManager.onTouching += TouchingCallback;
         GameObject myObject = GameObject.Find("Scrawk4");
         scrawkVoxelizer = myObject.GetComponent<ScrawkVoxelizer>();
         scrawkVoxelizer.StartVoxels();
@@ -57,7 +57,7 @@ public class Chunk4EditVoxels : MonoBehaviour
 
     private void OnDestroy()
     {
-        InputManager.onTouching -= TouchingCallback;
+        DualInputManager.onTouching -= TouchingCallback;
     }
 
     public void Initialize(bool boxesVisible, int brushSize, float brushStrength, float brushFallback,

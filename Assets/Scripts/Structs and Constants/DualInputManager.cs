@@ -9,6 +9,7 @@ public class DualInputManager : MonoBehaviour
 
     [Header("Actions")]
     public static Action<Vector3> onTouching;
+    [SerializeField] private float extentFactor = 0.1f;
     [SerializeField] private GameObject wigglyHandpiece;
     [SerializeField] private bool mouseInput;
     // private bool isColliding = false;
@@ -23,10 +24,9 @@ public class DualInputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // if (Input.GetMouseButton(0))
-        // {
         if (mouseInput)
         {
+            if (Input.GetMouseButton(0))
             ClickingWithMouse();
             // Debug.Log("Mouse input");
         }
@@ -35,7 +35,6 @@ public class DualInputManager : MonoBehaviour
             ClickingWithController();
             // Debug.Log("Controller input");
         }
-        // }
     }
 
     private void ClickingWithMouse()
@@ -49,7 +48,7 @@ public class DualInputManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"hit with mouse at {hitInfo.point}");
+        // Debug.Log($"hit with mouse at {hitInfo.point}");
         onTouching?.Invoke(hitInfo.point);
 
         /*
@@ -69,13 +68,13 @@ public class DualInputManager : MonoBehaviour
         BoxCollider boxCollider = wigglyHandpiece.GetComponent<BoxCollider>();
         if (boxCollider == null)
         {
-            Debug.LogError("WigglyHandpiece does not have a Capsule Collider component!");
+            // Debug.LogError("WigglyHandpiece does not have a Capsule Collider component!");
             return;
         }
 
         // Create an array to hold all colliders that overlap with the sphere collider
         Vector3 center = boxCollider.transform.TransformPoint(boxCollider.center);
-        Vector3 halfExtents = boxCollider.size * 0.22f;
+        Vector3 halfExtents = boxCollider.size * extentFactor;
 
         // Create an array to hold all colliders that overlap with the box collider
         Collider[] overlappingColliders = Physics.OverlapBox(center, halfExtents, boxCollider.transform.rotation);
@@ -95,41 +94,14 @@ public class DualInputManager : MonoBehaviour
                 if (collider.CompareTag("Cubes"))
                 {
                     // Log the position of the overlapping collider
-                    Debug.Log($"Overlap detected with: {collider.gameObject.name} at position: {collider.transform.position}");
+                    // Debug.Log($"Overlap detected with: {collider.gameObject.name} at position: {collider.transform.position}");
                     onTouching?.Invoke(collider.transform.position);
                 }
             }
         }
         else
         {
-            Debug.Log("No overlaps detected.");
+            // Debug.Log("No overlaps detected.");
         }
-
-
-
-        // if (burrCollider == null) return;
-
-        // // Calculate the sphere radius as half of the bounds size of the mesh
-        // float sphereRadius = burrCollider.bounds.extents.magnitude;
-
-        // // Get the position of HapticCollider
-        // Vector3 position = burrCollider.transform.position;
-
-        // // Perform an overlap sphere check to find colliders within the sphere radius
-        // Collider[] hitColliders = Physics.OverlapSphere(position, sphereRadius);
-
-        // // Log hit information for each collider detected
-        // if (hitColliders.Length > 0)
-        // {
-        //     foreach (var hit in hitColliders)
-        //     {
-        //         // Ensure we don't log the HapticCollider itself
-        //         if (hit.gameObject != burrCollider.gameObject)
-        //         {
-        //             Debug.Log($"hit with mouse at {hit.transform.position}");
-        //             onTouching?.Invoke(hit.transform.position);
-        //         }
-        //     }
-        // }
     }
 }

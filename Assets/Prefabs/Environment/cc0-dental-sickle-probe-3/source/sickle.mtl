@@ -1,0 +1,14 @@
+# Blender 3.4.1 MTL File: 'None'
+# www.blender.org
+
+newmtl DentalSickleProbe3
+Ns 20.000006
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd DentalSickleProbe3Albedo.png
+map_Ks DentalSickleProbe3Rough.png
+map_refl DentalSickleProbe3Metal.png
+map_Bump -bm 0.300000 DentalSickleProbe3Normal.png

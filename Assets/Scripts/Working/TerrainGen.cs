@@ -120,7 +120,7 @@ public class TerrainGen : MonoBehaviour
                     dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
                     dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
                     dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
-                    dataPointCube[x, y, z].tag = "Cubes"; // Replace "YourTagName" with the desired tag
+                    dataPointCube[x, y, z].tag = "Cubes";
 
                     MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
                     meshRenderer.material.color = new Vector4(0.9f, 0.7f, 0f);

@@ -37,13 +37,15 @@ public class TerrainChunks : MonoBehaviour
     {        
         float terrainWorldSize = gridScale * (gridLines - 1);
 
+        
+        Vector3 spawnPosition = new Vector3(0,2,0);
+
         for (int z = 0; z < chunksInOneAxis.z; z++)
         {
             for (int y = 0; y < chunksInOneAxis.y; y++)
             {
                 for (int x = 0; x < chunksInOneAxis.x; x++)
                 {
-                    Vector3 spawnPosition = Vector3.zero;
 
                     spawnPosition.x = x * terrainWorldSize;
                     spawnPosition.y = y * terrainWorldSize;
@@ -53,7 +55,9 @@ public class TerrainChunks : MonoBehaviour
                     spawnPosition.y -= ((float)chunksInOneAxis.y / 2 * terrainWorldSize) - terrainWorldSize / 2;
                     spawnPosition.z -= ((float)chunksInOneAxis.z / 2 * terrainWorldSize) - terrainWorldSize / 2;
 
-                    TerrainGen terrain = Instantiate(terrainGeneratorPrefab, spawnPosition, Quaternion.identity, transform);
+                    // Debug.Log($"Chunk [{x},{y},{z}] has a position of {spawnPosition}");
+
+                    TerrainGen terrain = Instantiate(terrainGeneratorPrefab, new Vector3(0,1.5f,0), Quaternion.identity, transform);
 
                     
                     terrain.Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback,
