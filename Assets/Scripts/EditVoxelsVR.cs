@@ -9,11 +9,12 @@ using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
 using Vector2 = UnityEngine.Vector2;
+using System.IO;
 
 public class EditVoxelsVR : MonoBehaviour
 {
     [Header("Brush Settings")]
-    
+
     [SerializeField] private int brushSize;
     [SerializeField] private float brushStrength;
     [SerializeField] private float brushFallback;
@@ -23,11 +24,15 @@ public class EditVoxelsVR : MonoBehaviour
     Mesh mesh;
 
     [Header("Data")]
+    [SerializeField] private bool importVoxels;
+    [SerializeField] private string voxelGridValuesPath;
+    [SerializeField] private string dimensionsFilePath;
+    [SerializeField] private ScrawkVoxelizer scrawkVoxelizer;
     [SerializeField] private bool boxesVisible;
     private Vector3Int gridLines;
-    private float gridScale;
+    public float gridScale;
     [SerializeField] private float gridCubeSizeFactor;
-    [SerializeField] private float isoValue;
+    [SerializeField] public float isoValue;
     [SerializeField] private float randomizer;
     [SerializeField] private MeshFilter filter;
     private VolumeGrid volumeGrid;
@@ -35,26 +40,33 @@ public class EditVoxelsVR : MonoBehaviour
     private List<int> triangles = new List<int>();
     private float gridCubeSize;
     private float[,,] voxelGridValues;
-    private float[,,] gridValues;
+    public float[,,] gridValues;
     GameObject[,,] dataPointCube;
-    private ScrawkVoxelizer scrawkVoxelizer;
     GameObject targetObject;
 
     private void Awake()
     {
         DualInputManager.onTouching += TouchingCallback;
-        scrawkVoxelizer = FindObjectOfType<ScrawkVoxelizer>();
-        scrawkVoxelizer.StartVoxels();
-        voxelGridValues = scrawkVoxelizer.GetVoxelGrid();
+
+        targetObject = scrawkVoxelizer.targetObject;
+        if (importVoxels)
+        {
+            voxelGridValues = LoadFloatArray(voxelGridValuesPath, dimensionsFilePath);
+            targetObject.SetActive(false);
+        }
+        else
+        {
+            scrawkVoxelizer.StartVoxels();
+            voxelGridValues = scrawkVoxelizer.GetVoxelGrid();
+            //Debug.Log($"Most Grid Lines = {gridLines}");
+            gridScale = scrawkVoxelizer.voxelResolution;
+        }
         gridLines.x = voxelGridValues.GetLength(0);
         gridLines.y = voxelGridValues.GetLength(1);
         gridLines.z = voxelGridValues.GetLength(2);
-        //Debug.Log($"Most Grid Lines = {gridLines}");
-        gridScale = scrawkVoxelizer.voxelResolution;
-        GameObject models = GameObject.Find("Incisor");
-        models.SetActive(false);
 
-        targetObject = scrawkVoxelizer.targetObject; 
+
+        targetObject = scrawkVoxelizer.targetObject;
 
         // Uncomment below for testing with no Chunks
         Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
@@ -119,11 +131,13 @@ public class EditVoxelsVR : MonoBehaviour
         }
 
         volumeGrid = new VolumeGrid(gridLinesx - 1, gridLinesy - 1, gridLinesz - 1, gridScale, isoValue);
-        
-        transform.position = targetObject.transform.position;
+
+        MeshRenderer targetRenderer = targetObject.GetComponent<MeshRenderer>();
+        Vector3 center = targetRenderer.bounds.center;
+        transform.position = center;
         transform.localScale = targetObject.transform.localScale;
         transform.rotation = targetObject.transform.rotation;
-        
+
         GenerateMesh();
     }
 
@@ -203,15 +217,49 @@ public class EditVoxelsVR : MonoBehaviour
         mesh.uv = uvs;
 
         //Assigning the two lists to the mesh filter
-        filter.mesh = mesh;
 
         mesh.RecalculateNormals();
+        filter.mesh = mesh;
+
 
         //Video 16 -- GenerateCollider not implemented
         //GenerateCollider();
     }
 
+    public float[,,] FinishedGridValues()
+    {
+        return gridValues;
+    }
+    public float[,,] LoadFloatArray(string filePath, string dimensionsFilePath)
+    {
+        int xLength, yLength, zLength;
 
+        using (StreamReader reader = new StreamReader(File.Open(dimensionsFilePath, FileMode.Open)))
+        {
+            gridScale = float.Parse(reader.ReadLine());
+            xLength = int.Parse(reader.ReadLine());
+            yLength = int.Parse(reader.ReadLine());
+            zLength = int.Parse(reader.ReadLine());
+        }
+
+        float[,,] array = new float[xLength, yLength, zLength];
+
+        using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+        {
+            for (int x = 0; x < xLength; x++)
+            {
+                for (int y = 0; y < yLength; y++)
+                {
+                    for (int z = 0; z < zLength; z++)
+                    {
+                        array[x, y, z] = reader.ReadSingle();
+                    }
+                }
+            }
+        }
+
+        return array;
+    }
     private void RemoveCubes(GameObject[,,] dataPointCube, float bufferBeforeDestroy)
     {
         for (int z = 0; z < gridLines.z; z++)
@@ -234,7 +282,6 @@ public class EditVoxelsVR : MonoBehaviour
             }
         }
     }
-
 
     private void GenerateCollider()
     {

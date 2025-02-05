@@ -32,6 +32,7 @@ public class ScrawkVoxelizer : MonoBehaviour
         // Set localOrigin to the minimum bounds of the mesh in world space
         localOrigin = targetObject.GetComponent<MeshFilter>().sharedMesh.bounds.min + targetObject.transform.position;
         VoxelizeMesh();
+        targetObject.SetActive(false);
     }
 
 

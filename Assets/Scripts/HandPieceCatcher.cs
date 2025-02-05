@@ -28,7 +28,7 @@ public class HandPieceCatcher : MonoBehaviour
         else
         {
             // Reset the position of the entering GameObject to its original position
-            other.transform.position = notebookOriginalPosition;
+            // other.transform.position = notebookOriginalPosition;
         }
     }
 }
