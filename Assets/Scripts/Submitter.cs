@@ -6,37 +6,100 @@ using UnityEngine;
 public class Submitter : MonoBehaviour
 
 {
-    private EditVoxelsVR editVoxelsVR;
-    private float[,,] importedGridValues;
-    private float[,,] benchmark;
+    private EditVoxelsVR AccessOuteditVoxelsVR;
+    private EditVoxelsVR AccessMideditVoxelsVR;
+    private EditVoxelsVR AccessIneditVoxelsVR;
+    private EditVoxelsVR BackIneditVoxelsVR;
+    private EditVoxelsVR BackOuteditVoxelsVR;
+    private float[,,] AccessOutCurrentGridValues;
+    private float[,,] AccessMidCurrentGridValues;
+    private float[,,] AccessInCurrentGridValues;
+    private float[,,] BackInCurrentGridValues;
+    private float[,,] BackOutCurrentGridValues;
+    private float[,,] AccessOutbenchmark;
+    private float[,,] AccessMidbenchmark;
+    private float[,,] AccessInbenchmark;
+    private float[,,] BackInbenchmark;
+    private float[,,] BackOutbenchmark;
     private float gridScale;
     private float isoValue;
-    [HideInInspector] public float similarityPercentage;
-    [SerializeField] private TextMeshProUGUI resultText;
 
-    [Header("Trial Setting")]
-    [SerializeField] private string voxelGridValuesPath;
-    [SerializeField] private string voxelGridValuesDimensionsPath;
+    [HideInInspector] public float AccessOutsimilarityPercentage;
+    [HideInInspector] public float AccessMidsimilarityPercentage;
+    [HideInInspector] public float AccessInsimilarityPercentage;
+    [HideInInspector] public float BackInsimilarityPercentage;
+    [HideInInspector] public float BackOutsimilarityPercentage;
+    [SerializeField] private TextMeshProUGUI AccessOutText;
+    [SerializeField] private TextMeshProUGUI AccessMidText;
+    [SerializeField] private TextMeshProUGUI AccessInText;
+    [SerializeField] private TextMeshProUGUI BackInText;
+    [SerializeField] private TextMeshProUGUI BackOutText;
+    [SerializeField] private bool saveIt;
+    [SerializeField] private bool compareIt;
+
+    [Header("Edit Voxel Objects")]
+    [SerializeField] private GameObject AccessOutObject;
+    [SerializeField] private GameObject AccessMidObject;
+    [SerializeField] private GameObject AccessInObject;
+    [SerializeField] private GameObject BackInObject;
+    [SerializeField] private GameObject BackOutObject;
+
+    [Header("Trial Settings")]
+    [SerializeField] private string AccessOutPath;
+    [SerializeField] private string AccessOutDimensionsPath;
+    [SerializeField] private string AccessMidPath;
+    [SerializeField] private string AccessMidDimensionsPath;
+    [SerializeField] private string AccessInPath;
+    [SerializeField] private string AccessInDimensionsPath;
+    [SerializeField] private string BackInPath;
+    [SerializeField] private string BackInDimensionsPath;
+    [SerializeField] private string BackOutPath;
+    [SerializeField] private string BackOutDimensionsPath;
 
 
     [Header("Becnhmark Setting")]
-    [SerializeField] private string voxelGridValuesPath1;
-    [SerializeField] private string voxelGridValuesDimensionsPath1;
+    [SerializeField] private string AccessOutBenchmarkPath;
+    [SerializeField] private string AccessOutBenchmarkPathDimensions;
+
+    [SerializeField] private string AccessMidBenchmarkPath;
+    [SerializeField] private string AccessMidBenchmarkPathDimensions;
+
+    [SerializeField] private string AccessInBenchmarkPath;
+    [SerializeField] private string AccessInBenchmarkPathDimensions;
+
+    [SerializeField] private string BackInBenchmarkPath;
+    [SerializeField] private string BackInBenchmarkPathDimensions;
+
+    [SerializeField] private string BackOutBenchmarkPath;
+    [SerializeField] private string BackOutBenchmarkPathDimensions;
 
     // Start is called before the first frame update
     void Start()
     {
-        GameObject holderObject = GameObject.Find("Edit Voxels");
-        editVoxelsVR = holderObject.GetComponent<EditVoxelsVR>();
-        importedGridValues = editVoxelsVR.FinishedGridValues();
-        isoValue = editVoxelsVR.isoValue;
-        //SaveFloatArray(importedGridValues, voxelGridValuesPath,voxelGridValuesDimensionsPath);
-        benchmark = LoadFloatArray(voxelGridValuesPath1, voxelGridValuesDimensionsPath1);
-        similarityPercentage = Compare3DArrays(importedGridValues, benchmark, isoValue);
-        resultText.text = $"{similarityPercentage:F2}%";
+        AccessOuteditVoxelsVR = AccessOutObject.GetComponent<EditVoxelsVR>();
+        AccessOutCurrentGridValues = AccessOuteditVoxelsVR.FinishedGridValues();
+        isoValue = AccessOuteditVoxelsVR.isoValue;
+
+        AccessMideditVoxelsVR = AccessMidObject.GetComponent<EditVoxelsVR>();
+        AccessMidCurrentGridValues = AccessMideditVoxelsVR.FinishedGridValues();
+
+        AccessIneditVoxelsVR = AccessInObject.GetComponent<EditVoxelsVR>();
+        AccessInCurrentGridValues = AccessIneditVoxelsVR.FinishedGridValues();
+
+        BackIneditVoxelsVR = BackInObject.GetComponent<EditVoxelsVR>();
+        BackInCurrentGridValues = BackIneditVoxelsVR.FinishedGridValues();
+
+        BackOuteditVoxelsVR = BackOutObject.GetComponent<EditVoxelsVR>();
+        BackOutCurrentGridValues = BackOuteditVoxelsVR.FinishedGridValues();
+
+        AccessOut();
+        AccessMid();
+        AccessIn();
+        BackIn();
+        BackOut();
     }
-    
-    public void SaveFloatArray(float[,,] array, string filePath, string dimensionsFilePath)
+
+    public void SaveFloatArray(float[,,] array, string filePath, string dimensionsFilePath, EditVoxelsVR evVR)
     {
         int xLength = array.GetLength(0);
         int yLength = array.GetLength(1);
@@ -72,12 +135,13 @@ public class Submitter : MonoBehaviour
             }
         }
 
-        using (StreamWriter writer = new StreamWriter(File.Open(dimensionsFilePath, FileMode.Create))) {
-        writer.WriteLine(editVoxelsVR.gridScale);
-        writer.WriteLine(xLength);
-        writer.WriteLine(yLength);
-        writer.WriteLine(zLength);
-    }
+        using (StreamWriter writer = new StreamWriter(File.Open(dimensionsFilePath, FileMode.Create)))
+        {
+            writer.WriteLine(evVR.gridScale);
+            writer.WriteLine(xLength);
+            writer.WriteLine(yLength);
+            writer.WriteLine(zLength);
+        }
     }
     public float[,,] LoadFloatArray(string filePath, string dimensionsFilePath)
     {
@@ -120,7 +184,7 @@ public class Submitter : MonoBehaviour
             return 0f;
         }
 
-        int totalElements = arrayA.Length;
+        int totalElements = 0;
         int similarElements = 0;
 
         // Iterate through each element in the arrays
@@ -130,11 +194,17 @@ public class Submitter : MonoBehaviour
             {
                 for (int z = 0; z < arrayA.GetLength(2); z++)
                 {
-                    if (arrayA[x, y, z] <= isoValue && arrayB[x, y, z] <= isoValue)
+                    if (arrayB[x, y, z] == -9999 || arrayB[x, y, z] > isoValue)
+                    {
+                        totalElements++;
+                    }
+
+                    if (arrayA[x, y, z] == -9999 && arrayB[x, y, z] == -9999)
                     {
                         similarElements++;
                     }
-                    else if (arrayA[x,y,z] > isoValue && arrayB[x,y,z] > isoValue)
+
+                    else if (arrayA[x, y, z] >= isoValue && arrayB[x, y, z] >= isoValue)
                     {
                         similarElements++;
                     }
@@ -145,5 +215,70 @@ public class Submitter : MonoBehaviour
         // Calculate the percentage of similar elements
         float similarityPercentage = ((float)similarElements / totalElements) * 100;
         return similarityPercentage;
+    }
+
+    private void AccessOut()
+    {
+        if (saveIt)
+            SaveFloatArray(AccessOutCurrentGridValues, AccessOutPath, AccessOutDimensionsPath, AccessOuteditVoxelsVR);
+
+        if (compareIt)
+        {
+            AccessOutbenchmark = LoadFloatArray(AccessOutBenchmarkPath, AccessOutBenchmarkPathDimensions);
+            AccessOutsimilarityPercentage = Compare3DArrays(AccessOutCurrentGridValues, AccessOutbenchmark, isoValue);
+            AccessOutText.text = $"{AccessOutsimilarityPercentage:F2}%";
+        }
+    }
+
+    private void AccessMid()
+    {
+        if (saveIt)
+            SaveFloatArray(AccessMidCurrentGridValues, AccessMidPath, AccessMidDimensionsPath, AccessMideditVoxelsVR);
+
+        if (compareIt)
+        {
+            AccessMidbenchmark = LoadFloatArray(AccessMidBenchmarkPath, AccessMidBenchmarkPathDimensions);
+            AccessMidsimilarityPercentage = Compare3DArrays(AccessMidCurrentGridValues, AccessMidbenchmark, isoValue);
+            AccessMidText.text = $"{AccessMidsimilarityPercentage:F2}%";
+        }
+    }
+
+    private void AccessIn()
+    {
+        if (saveIt)
+            SaveFloatArray(AccessInCurrentGridValues, AccessInPath, AccessInDimensionsPath, AccessIneditVoxelsVR);
+
+        if (compareIt)
+        {
+            AccessInbenchmark = LoadFloatArray(AccessInBenchmarkPath, AccessInBenchmarkPathDimensions);
+            AccessInsimilarityPercentage = Compare3DArrays(AccessInCurrentGridValues, AccessInbenchmark, isoValue);
+            AccessInText.text = $"{AccessInsimilarityPercentage:F2}%";
+        }
+    }
+
+    private void BackIn()
+    {
+        if (saveIt)
+            SaveFloatArray(BackInCurrentGridValues, BackInPath, BackInDimensionsPath, BackIneditVoxelsVR);
+
+        if (compareIt)
+        {
+            BackInbenchmark = LoadFloatArray(BackInBenchmarkPath, BackInBenchmarkPathDimensions);
+            BackInsimilarityPercentage = Compare3DArrays(BackInCurrentGridValues, BackInbenchmark, isoValue);
+            BackInText.text = $"{BackInsimilarityPercentage:F2}%";
+        }
+    }
+
+    private void BackOut()
+    {
+        if (saveIt)
+            SaveFloatArray(BackOutCurrentGridValues, BackOutPath, BackOutDimensionsPath, BackOuteditVoxelsVR);
+
+        if (compareIt)
+        {
+            BackOutbenchmark = LoadFloatArray(BackOutBenchmarkPath, BackOutBenchmarkPathDimensions);
+            BackOutsimilarityPercentage = Compare3DArrays(BackOutCurrentGridValues, BackOutbenchmark, isoValue);
+            BackOutText.text = $"{BackOutsimilarityPercentage:F2}%";
+        }
     }
 }

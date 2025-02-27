@@ -7,6 +7,12 @@ public class DualInputManager : MonoBehaviour
 {
     private bool clicking;
 
+    [Header("Tool Settings")]
+    public int brushSize;
+    public float brushStrength;
+    public float brushFallback;
+    public float bufferBeforeDestroy;
+
     [Header("Actions")]
     public static Action<Vector3> onTouching;
     [SerializeField] private float extentFactor = 0.1f;
@@ -27,7 +33,7 @@ public class DualInputManager : MonoBehaviour
         if (mouseInput)
         {
             if (Input.GetMouseButton(0))
-            ClickingWithMouse();
+                ClickingWithMouse();
             // Debug.Log("Mouse input");
         }
         else

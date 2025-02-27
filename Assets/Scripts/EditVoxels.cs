@@ -13,11 +13,7 @@ using System.IO;
 
 public class EditVoxels : MonoBehaviour
 {
-    [Header("Brush Settings")]
-    [SerializeField] private int brushSize;
-    [SerializeField] private float brushStrength;
-    [SerializeField] private float brushFallback;
-    [SerializeField] private float bufferBeforeDestroy;
+
     float deminishingValue;
 
     Mesh mesh;
@@ -42,6 +38,10 @@ public class EditVoxels : MonoBehaviour
     private float[,,] gridValues;
     GameObject[,,] dataPointCube;
     GameObject targetObject;
+    int brushSize;
+    float brushStrength;
+    float brushFallback;
+    float bufferBeforeDestroy;
 
     private void Awake()
     {
@@ -68,7 +68,7 @@ public class EditVoxels : MonoBehaviour
         targetObject = scrawkVoxelizer.targetObject;
 
         // Uncomment below for testing with no Chunks
-        Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
+        Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, gridCubeSizeFactor);
     }
 
     private void OnDestroy()
@@ -76,19 +76,14 @@ public class EditVoxels : MonoBehaviour
         DualInputManager.onTouching -= TouchingCallback;
     }
 
-    public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
-    float gridCubeSizeFactor, float bufferBeforeDestroy)
+    public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, float gridCubeSizeFactor)
     {
         this.gridScale = gridScale;
         this.gridLines.x = gridLinesx;
         this.gridLines.y = gridLinesy;
         this.gridLines.z = gridLinesz;
         this.boxesVisible = boxesVisible;
-        this.brushSize = brushSize;
-        this.brushStrength = brushStrength;
-        this.brushFallback = brushFallback;
         this.gridCubeSizeFactor = gridCubeSizeFactor;
-        this.bufferBeforeDestroy = bufferBeforeDestroy;
 
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
@@ -149,7 +144,12 @@ public class EditVoxels : MonoBehaviour
         //Debug.Log($"Inverse-World Position: {worldPosition}");
         Vector3Int gridPosition = WorldToGridPosition(worldPosition);
         //Debug.Log($"Grid Position converted: {gridPosition}");
+        GameObject dual = GameObject.Find("Input");
 
+        brushSize = dual.GetComponent<DualInputManager>().brushSize;
+        brushStrength = dual.GetComponent<DualInputManager>().brushStrength;
+        brushFallback = dual.GetComponent<DualInputManager>().brushFallback;
+        bufferBeforeDestroy = dual.GetComponent<DualInputManager>().bufferBeforeDestroy;
         bool shouldGenerate = false;
 
         for (int z = gridPosition.z - brushSize; z <= gridPosition.z + brushSize; z++)

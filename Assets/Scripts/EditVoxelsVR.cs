@@ -13,12 +13,10 @@ using System.IO;
 
 public class EditVoxelsVR : MonoBehaviour
 {
-    [Header("Brush Settings")]
-
-    [SerializeField] private int brushSize;
-    [SerializeField] private float brushStrength;
-    [SerializeField] private float brushFallback;
-    [SerializeField] private float bufferBeforeDestroy;
+    int brushSize;
+    float brushStrength;
+    float brushFallback;
+    float bufferBeforeDestroy;
     float deminishingValue;
 
     Mesh mesh;
@@ -30,7 +28,7 @@ public class EditVoxelsVR : MonoBehaviour
     [SerializeField] private ScrawkVoxelizer scrawkVoxelizer;
     [SerializeField] private bool boxesVisible;
     private Vector3Int gridLines;
-    public float gridScale;
+    [HideInInspector] public float gridScale;
     [SerializeField] private float gridCubeSizeFactor;
     [SerializeField] public float isoValue;
     [SerializeField] private float randomizer;
@@ -69,7 +67,7 @@ public class EditVoxelsVR : MonoBehaviour
         targetObject = scrawkVoxelizer.targetObject;
 
         // Uncomment below for testing with no Chunks
-        Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
+        Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, gridCubeSizeFactor);
     }
 
     private void OnDestroy()
@@ -77,19 +75,14 @@ public class EditVoxelsVR : MonoBehaviour
         DualInputManager.onTouching -= TouchingCallback;
     }
 
-    public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,
-    float gridCubeSizeFactor, float bufferBeforeDestroy)
+    public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, float gridCubeSizeFactor)
     {
         this.gridScale = gridScale;
         this.gridLines.x = gridLinesx;
         this.gridLines.y = gridLinesy;
         this.gridLines.z = gridLinesz;
         this.boxesVisible = boxesVisible;
-        this.brushSize = brushSize;
-        this.brushStrength = brushStrength;
-        this.brushFallback = brushFallback;
         this.gridCubeSizeFactor = gridCubeSizeFactor;
-        this.bufferBeforeDestroy = bufferBeforeDestroy;
 
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
@@ -149,6 +142,12 @@ public class EditVoxelsVR : MonoBehaviour
         //Debug.Log($"Inverse-World Position: {worldPosition}");
         Vector3Int gridPosition = WorldToGridPosition(worldPosition);
         //Debug.Log($"Grid Position converted: {gridPosition}");
+        GameObject dual = GameObject.Find("Input");
+
+        brushSize = dual.GetComponent<DualInputManager>().brushSize;
+        brushStrength = dual.GetComponent<DualInputManager>().brushStrength;
+        brushFallback = dual.GetComponent<DualInputManager>().brushFallback;
+        bufferBeforeDestroy = dual.GetComponent<DualInputManager>().bufferBeforeDestroy;
 
         bool shouldGenerate = false;
 
@@ -189,7 +188,6 @@ public class EditVoxelsVR : MonoBehaviour
         if (shouldGenerate)
         {
             GenerateMesh();
-
             RemoveCubes(dataPointCube, bufferBeforeDestroy);
         }
     }
@@ -273,6 +271,7 @@ public class EditVoxelsVR : MonoBehaviour
                         if (dataPointCube[x, y, z] != null)
                         {
                             Destroy(dataPointCube[x, y, z]);
+                            gridValues[x, y, z] = -9999;
                             //Debug.Log($"Destroyed Cube [{x}, {y}, {z}]");
                         }
                         //else
@@ -308,7 +307,6 @@ public class EditVoxelsVR : MonoBehaviour
         gridPosition.z = Mathf.RoundToInt((worldPosition.z + ((gridLines.z * gridScale / 2)) - (gridScale / 2)) / gridScale);
         return gridPosition;
     }
-
 
     // Just to avoid getting an error in the console when out of bounds
     private bool IsValidGridPosition(Vector3Int gridPosition)
