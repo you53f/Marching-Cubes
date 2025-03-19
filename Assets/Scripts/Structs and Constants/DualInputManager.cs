@@ -16,8 +16,11 @@ public class DualInputManager : MonoBehaviour
     [Header("Actions")]
     public static Action<Vector3> onTouching;
     [SerializeField] private float extentFactor = 0.1f;
-    [SerializeField] private GameObject wigglyHandpiece;
-    [SerializeField] private bool mouseInput;
+    [SerializeField] private GameObject handpiece;
+    [SerializeField] Collider hapticCollider;
+    public enum InputMethod { Mouse, Controllers, Haptic }
+
+    [SerializeField] private InputMethod inputMethods;
     // private bool isColliding = false;
     // private Collider burrCollider;
 
@@ -30,21 +33,39 @@ public class DualInputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mouseInput)
+        switch (inputMethods)
         {
-            if (Input.GetMouseButton(0))
-                ClickingWithMouse();
-            // Debug.Log("Mouse input");
-        }
-        else
-        {
-            ClickingWithController();
-            // Debug.Log("Controller input");
+            case InputMethod.Mouse:
+                if (Input.GetMouseButton(0))
+                    ClickingWithMouse();
+                // Debug.Log("Mouse input");
+                break;
+            case InputMethod.Controllers:
+                Controllers();
+                // Debug.Log("Controller input");
+                break;
+            case InputMethod.Haptic:
+                Haptics();
+                // Debug.Log("Haptic input");
+                break;
         }
     }
 
     private void ClickingWithMouse()
     {
+        GameObject touchActor = GameObject.Find("TouchActor");
+        if (touchActor == null)
+        {
+            // Debug.Log("TouchActor not found!");
+        }
+        else
+        {
+            touchActor.SetActive(false);
+            // Debug.Log("TouchActor found!");
+        }
+
+        
+        // Debug.Log("Inside Mouse input");
         RaycastHit hitInfo;
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);
 
@@ -68,14 +89,24 @@ public class DualInputManager : MonoBehaviour
 
     }
 
-    private void ClickingWithController()
+    private void Controllers()
     {
-        // Check if WigglyHandpiece has a SphereCollider component
-        BoxCollider boxCollider = wigglyHandpiece.GetComponent<BoxCollider>();
+        GameObject touchActor = GameObject.Find("TouchActor");
+        if (touchActor == null)
+        {
+            // Debug.LogError("TouchActor not found!");
+        }
+        else
+        {
+            touchActor.SetActive(false);
+            // Debug.Log("TouchActor found!");
+        }
+        
+        // Check if handpiece has a SphereCollider component
+        BoxCollider boxCollider = handpiece.GetComponent<BoxCollider>();
         if (boxCollider == null)
         {
-            // Debug.LogError("WigglyHandpiece does not have a Capsule Collider component!");
-            return;
+            // Debug.LogError("handpiece does not have a Capsule Collider component!");
         }
 
         // Create an array to hold all colliders that overlap with the sphere collider
@@ -90,24 +121,52 @@ public class DualInputManager : MonoBehaviour
         // Check if there are any overlapping colliders
         if (overlappingColliders.Length > 0)
         {
-            foreach (var collider in overlappingColliders)
+            // foreach (var collider in overlappingColliders)
+            // {
+            // Check if the other collider's GameObject has the tag "Cubes"
+            if (overlappingColliders[0].gameObject != handpiece && overlappingColliders[0].CompareTag("Cubes"))
             {
-                // Ignore the collider itself
-                if (collider.gameObject == wigglyHandpiece)
-                    continue;
-
-                // Check if the other collider's GameObject has the tag "Cubes"
-                if (collider.CompareTag("Cubes"))
-                {
-                    // Log the position of the overlapping collider
-                    // Debug.Log($"Overlap detected with: {collider.gameObject.name} at position: {collider.transform.position}");
-                    onTouching?.Invoke(collider.transform.position);
-                }
+                // Log the position of the overlapping collider
+                // Debug.Log($"Overlap detected with: {collider.gameObject.name} at position: {collider.transform.position}");
+                onTouching?.Invoke(overlappingColliders[0].transform.position);
             }
+            // }
         }
         else
         {
             // Debug.Log("No overlaps detected.");
+        }
+    }
+
+     private void Haptics()
+    {
+        // Check if Wigglyhandpiece has a SphereCollider component
+        BoxCollider boxCollider = handpiece.GetComponent<BoxCollider>();
+        if (boxCollider == null)
+        {
+            // Debug.LogError("handpiece does not have a Capsule Collider component!");
+        }
+
+        // Create an array to hold all colliders that overlap with the sphere collider
+        Vector3 center = boxCollider.transform.TransformPoint(boxCollider.center);
+        Vector3 halfExtents = boxCollider.size * extentFactor;
+
+        // Create an array to hold all colliders that overlap with the box collider
+        Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, boxCollider.transform.rotation);
+
+        // Debug.Log($"Overlapping colliders: {overlappingColliders.Length}");
+
+        // Check if there are any overlapping colliders
+        if (hitColliders.Length > 0)
+        {
+            // foreach (var hit in hitColliders)
+            // {
+                // Ensure we don't log the HapticCollider itself
+                if (hitColliders[0].gameObject != hapticCollider.gameObject)
+                {
+                    onTouching?.Invoke(hitColliders[0].transform.position);
+                }
+            // }
         }
     }
 }

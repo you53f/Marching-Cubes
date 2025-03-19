@@ -6,51 +6,67 @@ using UnityEngine;
 public class Submitter : MonoBehaviour
 
 {
-    private EditVoxelsVR AccessOuteditVoxelsVR;
-    private EditVoxelsVR AccessMideditVoxelsVR;
-    private EditVoxelsVR AccessIneditVoxelsVR;
+    private EditVoxelsVR AccessOutTopeditVoxelsVR;
+    private EditVoxelsVR AccessOutMideditVoxelsVR;
+    private EditVoxelsVR AccessOutLoweditVoxelsVR;
+    private EditVoxelsVR AccessInTopeditVoxelsVR;
+    private EditVoxelsVR AccessInLoweditVoxelsVR;
     private EditVoxelsVR BackIneditVoxelsVR;
     private EditVoxelsVR BackOuteditVoxelsVR;
-    private float[,,] AccessOutCurrentGridValues;
-    private float[,,] AccessMidCurrentGridValues;
-    private float[,,] AccessInCurrentGridValues;
+    private float[,,] AccessOutTopCurrentGridValues;
+    private float[,,] AccessOutMidCurrentGridValues;
+    private float[,,] AccessOutLowCurrentGridValues;
+    private float[,,] AccessInTopCurrentGridValues;
+    private float[,,] AccessInLowCurrentGridValues;
     private float[,,] BackInCurrentGridValues;
     private float[,,] BackOutCurrentGridValues;
-    private float[,,] AccessOutbenchmark;
-    private float[,,] AccessMidbenchmark;
-    private float[,,] AccessInbenchmark;
+    private float[,,] AccessOutTopbenchmark;
+    private float[,,] AccessOutMidbenchmark;
+    private float[,,] AccessOutLowbenchmark;
+    private float[,,] AccessInTopbenchmark;
+    private float[,,] AccessInLowbenchmark;
     private float[,,] BackInbenchmark;
     private float[,,] BackOutbenchmark;
     private float gridScale;
     private float isoValue;
 
-    [HideInInspector] public float AccessOutsimilarityPercentage;
-    [HideInInspector] public float AccessMidsimilarityPercentage;
-    [HideInInspector] public float AccessInsimilarityPercentage;
+    [HideInInspector] public float AccessOutTopsimilarityPercentage;
+    [HideInInspector] public float AccessOutMidsimilarityPercentage;
+    [HideInInspector] public float AccessOutLowsimilarityPercentage;
+    [HideInInspector] public float AccessInTopsimilarityPercentage;
+    [HideInInspector] public float AccessInLowsimilarityPercentage;
     [HideInInspector] public float BackInsimilarityPercentage;
     [HideInInspector] public float BackOutsimilarityPercentage;
-    [SerializeField] private TextMeshProUGUI AccessOutText;
-    [SerializeField] private TextMeshProUGUI AccessMidText;
-    [SerializeField] private TextMeshProUGUI AccessInText;
+    [SerializeField] private TextMeshProUGUI AccessOutTopText;
+    [SerializeField] private TextMeshProUGUI AccessOutMidText;
+    [SerializeField] private TextMeshProUGUI AccessOutLowText;
+    [SerializeField] private TextMeshProUGUI AccessInTopText;
+    [SerializeField] private TextMeshProUGUI AccessInLowText;
     [SerializeField] private TextMeshProUGUI BackInText;
     [SerializeField] private TextMeshProUGUI BackOutText;
     [SerializeField] private bool saveIt;
     [SerializeField] private bool compareIt;
 
     [Header("Edit Voxel Objects")]
-    [SerializeField] private GameObject AccessOutObject;
-    [SerializeField] private GameObject AccessMidObject;
-    [SerializeField] private GameObject AccessInObject;
+    [SerializeField] private GameObject AccessOutTopObject;
+    [SerializeField] private GameObject AccessOutMidObject;
+    [SerializeField] private GameObject AccessOutLowObject;
+    [SerializeField] private GameObject AccessInTopObject;
+    [SerializeField] private GameObject AccessInLowObject;
     [SerializeField] private GameObject BackInObject;
     [SerializeField] private GameObject BackOutObject;
 
     [Header("Trial Settings")]
-    [SerializeField] private string AccessOutPath;
-    [SerializeField] private string AccessOutDimensionsPath;
-    [SerializeField] private string AccessMidPath;
-    [SerializeField] private string AccessMidDimensionsPath;
-    [SerializeField] private string AccessInPath;
-    [SerializeField] private string AccessInDimensionsPath;
+    [SerializeField] private string AccessOutTopPath;
+    [SerializeField] private string AccessOutTopDimensionsPath;
+    [SerializeField] private string AccessOutMidPath;
+    [SerializeField] private string AccessOutMidDimensionsPath;
+    [SerializeField] private string AccessOutLowPath;
+    [SerializeField] private string AccessOutLowDimensionsPath;
+    [SerializeField] private string AccessInTopPath;
+    [SerializeField] private string AccessInTopDimensionsPath;
+    [SerializeField] private string AccessInLowPath;
+    [SerializeField] private string AccessInLowDimensionsPath;
     [SerializeField] private string BackInPath;
     [SerializeField] private string BackInDimensionsPath;
     [SerializeField] private string BackOutPath;
@@ -58,14 +74,20 @@ public class Submitter : MonoBehaviour
 
 
     [Header("Becnhmark Setting")]
-    [SerializeField] private string AccessOutBenchmarkPath;
-    [SerializeField] private string AccessOutBenchmarkPathDimensions;
+    [SerializeField] private string AccessOutTopBenchmarkPath;
+    [SerializeField] private string AccessOutTopBenchmarkPathDimensions;
 
-    [SerializeField] private string AccessMidBenchmarkPath;
-    [SerializeField] private string AccessMidBenchmarkPathDimensions;
+    [SerializeField] private string AccessOutMidBenchmarkPath;
+    [SerializeField] private string AccessOutMidBenchmarkPathDimensions;
 
-    [SerializeField] private string AccessInBenchmarkPath;
-    [SerializeField] private string AccessInBenchmarkPathDimensions;
+    [SerializeField] private string AccessOutLowBenchmarkPath;
+    [SerializeField] private string AccessOutLowBenchmarkPathDimensions;
+
+    [SerializeField] private string AccessInTopBenchmarkPath;
+    [SerializeField] private string AccessInTopBenchmarkPathDimensions;
+
+    [SerializeField] private string AccessInLowBenchmarkPath;
+    [SerializeField] private string AccessInLowBenchmarkPathDimensions;
 
     [SerializeField] private string BackInBenchmarkPath;
     [SerializeField] private string BackInBenchmarkPathDimensions;
@@ -76,15 +98,21 @@ public class Submitter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AccessOuteditVoxelsVR = AccessOutObject.GetComponent<EditVoxelsVR>();
-        AccessOutCurrentGridValues = AccessOuteditVoxelsVR.FinishedGridValues();
-        isoValue = AccessOuteditVoxelsVR.isoValue;
+        AccessOutTopeditVoxelsVR = AccessOutTopObject.GetComponent<EditVoxelsVR>();
+        AccessOutTopCurrentGridValues = AccessOutTopeditVoxelsVR.FinishedGridValues();
+        isoValue = AccessOutTopeditVoxelsVR.isoValue;
 
-        AccessMideditVoxelsVR = AccessMidObject.GetComponent<EditVoxelsVR>();
-        AccessMidCurrentGridValues = AccessMideditVoxelsVR.FinishedGridValues();
+        AccessOutMideditVoxelsVR = AccessOutMidObject.GetComponent<EditVoxelsVR>();
+        AccessOutMidCurrentGridValues = AccessOutMideditVoxelsVR.FinishedGridValues();
 
-        AccessIneditVoxelsVR = AccessInObject.GetComponent<EditVoxelsVR>();
-        AccessInCurrentGridValues = AccessIneditVoxelsVR.FinishedGridValues();
+        AccessOutLoweditVoxelsVR = AccessOutLowObject.GetComponent<EditVoxelsVR>();
+        AccessOutLowCurrentGridValues = AccessOutLoweditVoxelsVR.FinishedGridValues();
+
+        AccessInTopeditVoxelsVR = AccessInTopObject.GetComponent<EditVoxelsVR>();
+        AccessInTopCurrentGridValues = AccessInTopeditVoxelsVR.FinishedGridValues();
+
+        AccessInLoweditVoxelsVR = AccessInLowObject.GetComponent<EditVoxelsVR>();
+        AccessInLowCurrentGridValues = AccessInLoweditVoxelsVR.FinishedGridValues();
 
         BackIneditVoxelsVR = BackInObject.GetComponent<EditVoxelsVR>();
         BackInCurrentGridValues = BackIneditVoxelsVR.FinishedGridValues();
@@ -92,9 +120,11 @@ public class Submitter : MonoBehaviour
         BackOuteditVoxelsVR = BackOutObject.GetComponent<EditVoxelsVR>();
         BackOutCurrentGridValues = BackOuteditVoxelsVR.FinishedGridValues();
 
-        AccessOut();
-        AccessMid();
-        AccessIn();
+        AccessOutTop();
+        AccessOutMid();
+        AccessOutLow();
+        AccessInTop();
+        AccessInLow();
         BackIn();
         BackOut();
     }
@@ -217,42 +247,68 @@ public class Submitter : MonoBehaviour
         return similarityPercentage;
     }
 
-    private void AccessOut()
+    private void AccessOutTop()
     {
         if (saveIt)
-            SaveFloatArray(AccessOutCurrentGridValues, AccessOutPath, AccessOutDimensionsPath, AccessOuteditVoxelsVR);
+            SaveFloatArray(AccessOutTopCurrentGridValues, AccessOutTopPath, AccessOutTopDimensionsPath, AccessOutTopeditVoxelsVR);
 
         if (compareIt)
         {
-            AccessOutbenchmark = LoadFloatArray(AccessOutBenchmarkPath, AccessOutBenchmarkPathDimensions);
-            AccessOutsimilarityPercentage = Compare3DArrays(AccessOutCurrentGridValues, AccessOutbenchmark, isoValue);
-            AccessOutText.text = $"{AccessOutsimilarityPercentage:F2}%";
+            AccessOutTopbenchmark = LoadFloatArray(AccessOutTopBenchmarkPath, AccessOutTopBenchmarkPathDimensions);
+            AccessOutTopsimilarityPercentage = Compare3DArrays(AccessOutTopCurrentGridValues, AccessOutTopbenchmark, isoValue);
+            AccessOutTopText.text = $"{AccessOutTopsimilarityPercentage:F2}%";
         }
     }
 
-    private void AccessMid()
+    private void AccessOutMid()
     {
         if (saveIt)
-            SaveFloatArray(AccessMidCurrentGridValues, AccessMidPath, AccessMidDimensionsPath, AccessMideditVoxelsVR);
+            SaveFloatArray(AccessOutMidCurrentGridValues, AccessOutMidPath, AccessOutMidDimensionsPath, AccessOutMideditVoxelsVR);
 
         if (compareIt)
         {
-            AccessMidbenchmark = LoadFloatArray(AccessMidBenchmarkPath, AccessMidBenchmarkPathDimensions);
-            AccessMidsimilarityPercentage = Compare3DArrays(AccessMidCurrentGridValues, AccessMidbenchmark, isoValue);
-            AccessMidText.text = $"{AccessMidsimilarityPercentage:F2}%";
+            AccessOutMidbenchmark = LoadFloatArray(AccessOutMidBenchmarkPath, AccessOutMidBenchmarkPathDimensions);
+            AccessOutMidsimilarityPercentage = Compare3DArrays(AccessOutMidCurrentGridValues, AccessOutMidbenchmark, isoValue);
+            AccessOutMidText.text = $"{AccessOutMidsimilarityPercentage:F2}%";
         }
     }
 
-    private void AccessIn()
+    private void AccessOutLow()
     {
         if (saveIt)
-            SaveFloatArray(AccessInCurrentGridValues, AccessInPath, AccessInDimensionsPath, AccessIneditVoxelsVR);
+            SaveFloatArray(AccessOutLowCurrentGridValues, AccessOutLowPath, AccessOutLowDimensionsPath, AccessOutLoweditVoxelsVR);
 
         if (compareIt)
         {
-            AccessInbenchmark = LoadFloatArray(AccessInBenchmarkPath, AccessInBenchmarkPathDimensions);
-            AccessInsimilarityPercentage = Compare3DArrays(AccessInCurrentGridValues, AccessInbenchmark, isoValue);
-            AccessInText.text = $"{AccessInsimilarityPercentage:F2}%";
+            AccessOutLowbenchmark = LoadFloatArray(AccessOutLowBenchmarkPath, AccessOutLowBenchmarkPathDimensions);
+            AccessOutLowsimilarityPercentage = Compare3DArrays(AccessOutLowCurrentGridValues, AccessOutLowbenchmark, isoValue);
+            AccessOutLowText.text = $"{AccessOutLowsimilarityPercentage:F2}%";
+        }
+    }
+
+    private void AccessInTop()
+    {
+        if (saveIt)
+            SaveFloatArray(AccessInTopCurrentGridValues, AccessInTopPath, AccessInTopDimensionsPath, AccessInTopeditVoxelsVR);
+
+        if (compareIt)
+        {
+            AccessInTopbenchmark = LoadFloatArray(AccessInTopBenchmarkPath, AccessInTopBenchmarkPathDimensions);
+            AccessInTopsimilarityPercentage = Compare3DArrays(AccessInTopCurrentGridValues, AccessInTopbenchmark, isoValue);
+            AccessInTopText.text = $"{AccessInTopsimilarityPercentage:F2}%";
+        }
+    }
+
+    private void AccessInLow()
+    {
+        if (saveIt)
+            SaveFloatArray(AccessInLowCurrentGridValues, AccessInLowPath, AccessInLowDimensionsPath, AccessInLoweditVoxelsVR);
+
+        if (compareIt)
+        {
+            AccessInLowbenchmark = LoadFloatArray(AccessInLowBenchmarkPath, AccessInLowBenchmarkPathDimensions);
+            AccessInLowsimilarityPercentage = Compare3DArrays(AccessInLowCurrentGridValues, AccessInLowbenchmark, isoValue);
+            AccessInLowText.text = $"{AccessInLowsimilarityPercentage:F2}%";
         }
     }
 

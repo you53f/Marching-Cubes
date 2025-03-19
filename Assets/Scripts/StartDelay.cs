@@ -7,8 +7,7 @@ public class StartDelay : MonoBehaviour
     [SerializeField] private float startDelay;   // Delay before starting the fade
     [SerializeField] private GameObject canvasGroup;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         StartCoroutine(StartingDelay());
     }

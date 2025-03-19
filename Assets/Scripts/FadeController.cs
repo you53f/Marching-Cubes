@@ -7,6 +7,7 @@ public class FadeController : MonoBehaviour
     [SerializeField] private float fadeDuration; // Duration of the fade effect
     [SerializeField] private float delay;        // Delay
     [SerializeField] private bool button;        // Check if the fade is triggered by a button
+    [SerializeField] private GameObject activateAfterFade; // GameObject to activate after fade
 
     private CanvasGroup canvasGroup; // For UI elements
 
@@ -32,6 +33,7 @@ public class FadeController : MonoBehaviour
             StartCoroutine(WaitAndKillCanvas());
         }
     }
+
     private IEnumerator WaitAndKillCanvas()
     {
         yield return new WaitForSeconds(delay);
@@ -45,13 +47,19 @@ public class FadeController : MonoBehaviour
 
     public void FadeIn()
     {
-        StartCoroutine(FadeCoroutine(0f, 1f,fadeDuration));
+        StartCoroutine(FadeCoroutine(0f, 1f, fadeDuration));
     }
 
     private IEnumerator KillCanvasCoroutine()
     {
         // Call FadeOut and wait for it to complete
         yield return FadeCoroutine(1f, 0f, fadeDuration);
+
+        // Activate the specified GameObject after fading out
+        if (activateAfterFade != null)
+        {
+            activateAfterFade.SetActive(true);
+        }
 
         // Now deactivate the GameObject after fading out
         gameObject.SetActive(false);

@@ -2959,6 +2959,11 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &1981486817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7654706998231278757, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+  m_PrefabInstance: {fileID: 8006256277249028396}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2001813805
 GameObject:
   m_ObjectHideFlags: 0
@@ -3197,8 +3202,9 @@ MonoBehaviour:
   brushFallback: 5
   bufferBeforeDestroy: 2
   extentFactor: 0.1
-  wigglyHandpiece: {fileID: 0}
-  mouseInput: 1
+  handpiece: {fileID: 0}
+  hapticCollider: {fileID: 0}
+  inputMethods: 0
 --- !u!1 &2055908570
 GameObject:
   m_ObjectHideFlags: 0
@@ -3531,7 +3537,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8820225915629562544, guid: 18e1ff4d3a014fe42b969365fff7c2bf, type: 3}
       propertyPath: m_Name
-      value: Slicer Incisor Chunks
+      value: Slicer Incisor Chunks Trial 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820225915629562544, guid: 18e1ff4d3a014fe42b969365fff7c2bf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4021,6 +4031,307 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2416738787783985920}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &8006256277249028396
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 98284458482369629, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 98284458482369629, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 98284458482369629, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 252912089447494431, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 252912089447494431, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\BI0.1dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 252912089447494431, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\BI0.1.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 285564432394621600, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 317452261612885446, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 317452261612885446, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIL0.08dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 317452261612885446, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIL0.08.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 881860689114612727, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 881860689114612727, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\NB0.06dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 881860689114612727, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\NB0.06.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 952043054086390675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\NT0.06dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\NT0.06.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 1419436671478631070, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1583323029457920212, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelDimensionsPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.05dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 1583323029457920212, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.05.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 1723535959571544633, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2348519778424112096, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621204622353588649, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: Trial 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2645165312176494850, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2645165312176494850, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.06dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 2645165312176494850, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.06.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894094219049581170, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3517807095462456238, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724919274962473909, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724919274962473909, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.08dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724919274962473909, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.08.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 3791630925368276306, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314855025312908280, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4464547616193537622, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556470392374100166, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4679066676550308709, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelDimensionsPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 4679066676550308709, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739971798760570492, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739971798760570492, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\BO0.1dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739971798760570492, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\BO0.1.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 4897027256488732375, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 4913235693717401276, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelDimensionsPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIT0.08dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 4913235693717401276, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIT0.08.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042012678945826416, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5320555982570402512, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5578106904250927281, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395291810060002460, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6537927845863789931, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: targetObject
+      value: 
+      objectReference: {fileID: 1981486817}
+    - target: {fileID: 6537927845863789931, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7020065016972824511, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 7078065680052095597, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467288125578248366, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7471267157380682027, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691325935446158604, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelDimensionsPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIL0.08dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691325935446158604, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIL0.08.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833369380388556235, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.42539078
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.8300393
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.6235727
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8384193835659789175, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 8392035494251648298, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8392035494251648298, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: dimensionsFilePath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIT0.08dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 8392035494251648298, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AIT0.08.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 9000101017690182147, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelDimensionsPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.1dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 9000101017690182147, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelGridValuesPath
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.1.dat
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
 --- !u!4 &8083756070483830406
 Transform:
   m_ObjectHideFlags: 0
@@ -4199,3 +4510,4 @@ SceneRoots:
   - {fileID: 1329702290}
   - {fileID: 1204400203}
   - {fileID: 1142912588947203542}
+  - {fileID: 8006256277249028396}
