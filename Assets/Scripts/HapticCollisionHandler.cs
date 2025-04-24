@@ -1,15 +1,21 @@
 using UnityEngine;
+using UnityEngine.XR.OpenXR.Input;
 
-[RequireComponent(typeof(SphereCollider))]
 public class HapticCollisionHandler : MonoBehaviour
 {
     [Header("Collider Settings")]
-    [Tooltip("Assign the sphere collider used for haptic interaction")]
-    [SerializeField] private SphereCollider hapticCollider;
-
-    [Header("Component Management")]
-    [Tooltip("Should components be destroyed when not in contact?")]
-    [SerializeField] private bool destroyComponentsWhenInactive = false;
+    [SerializeField] private bool enableHaptics;
+    [Range(0,1)] [SerializeField] float stiffness;
+    [Range(0,1)] [SerializeField] float damping;
+    [Range(0,1)] [SerializeField] private float viscosity;
+    [Range(0,1)] [SerializeField] private float staticFriction;
+    [Range(0,1)] [SerializeField] private float dynamicFriction;
+    [SerializeField] Vector3 force;
+    [SerializeField] float forceMagnitude;
+    [SerializeField] private bool useContactNormal;
+    [SerializeField] private bool useContactNormalInverse;
+    [Range(0,7)] [SerializeField] private float popThrough;
+    [SerializeField] private Collider bufferCollider;
 
     void Start()
     {
@@ -19,13 +25,13 @@ public class HapticCollisionHandler : MonoBehaviour
     void InitializeCollider()
     {
         // Auto-get collider if not assigned
-        if (hapticCollider == null)
-            hapticCollider = GetComponent<SphereCollider>();
+        if (bufferCollider == null)
+            bufferCollider = GetComponent<SphereCollider>();
 
         // Ensure proper trigger setup
-        if (hapticCollider != null)
+        if (bufferCollider != null)
         {
-            hapticCollider.isTrigger = true;
+            bufferCollider.isTrigger = true;
         }
         else
         {
@@ -53,25 +59,20 @@ public class HapticCollisionHandler : MonoBehaviour
     {
         // Get or add component
         HapticMaterial hapticComponent = cubeCollider.GetComponent<HapticMaterial>();
-        bool componentExisted = hapticComponent != null;
 
-        if (!componentExisted && activate)
+
+        if (hapticComponent == null && activate)
         {
             hapticComponent = cubeCollider.gameObject.AddComponent<HapticMaterial>();
-        }
 
-        // Handle component state
-        if (hapticComponent != null)
-        {
-            if (activate)
+            SetHaptics(hapticComponent);
+            // Handle component state
+            if (hapticComponent != null)
             {
-                hapticComponent.enabled = true;
-            }
-            else
-            {
-                if (destroyComponentsWhenInactive)
+                if (activate)
                 {
-                    Destroy(hapticComponent);
+                    hapticComponent.enabled = true;
+                    SetHaptics(hapticComponent);
                 }
                 else
                 {
@@ -79,5 +80,36 @@ public class HapticCollisionHandler : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void SetHaptics(HapticMaterial hapticComponent)
+    {
+        if (enableHaptics)
+            {
+                hapticComponent.hStiffness = stiffness;
+                hapticComponent.hDamping = damping;
+                hapticComponent.hViscosity = viscosity;
+                hapticComponent.hFrictionS = staticFriction;
+                hapticComponent.hFrictionD = dynamicFriction;
+                hapticComponent.hConstForceDir = force;
+                hapticComponent.hConstForceMag = forceMagnitude;
+                hapticComponent.UseContactNormalCF = useContactNormal;
+                hapticComponent.ContactNormalInverseCF = useContactNormalInverse;
+                hapticComponent.hPopthAbs = popThrough;
+            }
+
+            else
+            {
+                hapticComponent.hStiffness = 0;
+                hapticComponent.hDamping = 0;
+                hapticComponent.hViscosity = 0;
+                hapticComponent.hFrictionS = 0;
+                hapticComponent.hFrictionD = 0;
+                hapticComponent.hConstForceDir = Vector3.zero;
+                hapticComponent.hConstForceMag = 0;
+                hapticComponent.UseContactNormalCF = useContactNormal;
+                hapticComponent.ContactNormalInverseCF = useContactNormalInverse;
+                hapticComponent.hPopthAbs = 0;
+            }
     }
 }

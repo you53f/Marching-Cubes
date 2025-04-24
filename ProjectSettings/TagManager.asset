@@ -7,6 +7,11 @@ TagManager:
   - Tooth
   - Cubes
   - Handpiece
+  - Burr
+  - Renderer
+  - Haptic Collider
+  - Floor
+  - Diff
   layers:
   - Default
   - TransparentFX

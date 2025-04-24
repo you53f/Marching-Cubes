@@ -1606,29 +1606,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ab3a2f8c71f97a4f88ac624858631ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxesVisible: 0
-  brushSize: 2
-  brushStrength: 1
-  brushFallback: 5
-  bufferBeforeDestroy: 0.1
-  offset: {x: 0.03, y: 0.05, z: 0.04}
-  gridCubeSizeFactor: 0.99
-  chunkModel0: {fileID: 366754153}
-  chunkModel1: {fileID: 1385241656}
-  chunkModel2: {fileID: 231076220}
-  chunkModel3: {fileID: 1885376116}
-  chunkModel4: {fileID: 1604523302}
-  chunkModel5: {fileID: 1727475595}
-  chunkModel6: {fileID: 2001813805}
-  chunkModel7: {fileID: 2055908570}
-  ch0: {fileID: 7063513709687588476, guid: 690e91760e4d0134abaa69f45016f57c, type: 3}
-  ch1: {fileID: 359110467363253079, guid: 2ecb305096588db44856c251684dbe55, type: 3}
-  ch2: {fileID: 6262997135265484536, guid: 95d7b03bccfd8124dbd54cc13692dd82, type: 3}
-  ch3: {fileID: 5915345090661599911, guid: cfee86adadd231948847305bb020173f, type: 3}
-  ch4: {fileID: 4192106041571267979, guid: 73c05e064c6436f4e941f112ef7987bc, type: 3}
-  ch5: {fileID: 8654316901040431407, guid: 039e3154e284c2d498fa00a3906ef768, type: 3}
-  ch6: {fileID: 5401295264470831563, guid: 9ef93646bb17f82469d10cbd96a47fb7, type: 3}
-  ch7: {fileID: 3412665152578888543, guid: fbd19fd475d0b384e810440dbf262bf4, type: 3}
 --- !u!850595691 &1302619220
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -3197,14 +3174,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 235dbc45210689b418439e9ca5295ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brushSize: 0
+  brushSize: 1
   brushStrength: 1
   brushFallback: 5
   bufferBeforeDestroy: 2
-  extentFactor: 0.1
-  handpiece: {fileID: 0}
-  hapticCollider: {fileID: 0}
-  inputMethods: 0
 --- !u!1 &2055908570
 GameObject:
   m_ObjectHideFlags: 0
@@ -3977,6 +3950,63 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1001 &7078960969147874723
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 771638289335984863, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_Name
+      value: New Molar Chunks
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.42539078
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.8300393
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.6235727
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084695529882493265, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2343f10841a574a42aab94f84747bf45, type: 3}
 --- !u!114 &7251484882049608012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4041,7 +4071,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 98284458482369629, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: importVoxels
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 98284458482369629, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: dimensionsFilePath
@@ -4131,6 +4161,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trial 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2621204622353588649, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2645165312176494850, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: importVoxels
       value: 0
@@ -4181,11 +4215,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4679066676550308709, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelDimensionsPath
-      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08dim.dat
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.05dim.dat
       objectReference: {fileID: 0}
     - target: {fileID: 4679066676550308709, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelGridValuesPath
-      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08.dat
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.05.dat
       objectReference: {fileID: 0}
     - target: {fileID: 4739971798760570492, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: importVoxels
@@ -4217,7 +4251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5320555982570402512, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5578106904250927281, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
@@ -4233,11 +4267,11 @@ PrefabInstance:
       objectReference: {fileID: 1981486817}
     - target: {fileID: 6537927845863789931, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelResolution
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 7020065016972824511, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelResolution
-      value: 0.08
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 7078065680052095597, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelResolution
@@ -4245,7 +4279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7467288125578248366, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7471267157380682027, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
@@ -4321,11 +4355,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9000101017690182147, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelDimensionsPath
-      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.1dim.dat
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.05dim.dat
       objectReference: {fileID: 0}
     - target: {fileID: 9000101017690182147, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelGridValuesPath
-      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.1.dat
+      value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.05.dat
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4511,3 +4545,4 @@ SceneRoots:
   - {fileID: 1204400203}
   - {fileID: 1142912588947203542}
   - {fileID: 8006256277249028396}
+  - {fileID: 7078960969147874723}

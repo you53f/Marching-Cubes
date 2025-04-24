@@ -41,10 +41,15 @@ public class EditVoxelsVR : MonoBehaviour
     public float[,,] gridValues;
     GameObject[,,] dataPointCube;
     GameObject targetObject;
+    InputActivator inputActivator;
 
     private void Awake()
     {
-        DualInputManager.onTouching += TouchingCallback;
+
+        inputActivator = FindObjectOfType<InputActivator>();
+
+        ControllerInput.onTouching += TouchingCallback;
+        HapticInput.onTouching += TouchingCallback;
 
         targetObject = scrawkVoxelizer.targetObject;
         if (importVoxels)
@@ -72,7 +77,8 @@ public class EditVoxelsVR : MonoBehaviour
 
     private void OnDestroy()
     {
-        DualInputManager.onTouching -= TouchingCallback;
+        ControllerInput.onTouching -= TouchingCallback;
+        HapticInput.onTouching -= TouchingCallback;
     }
 
     public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, float gridCubeSizeFactor)
@@ -87,7 +93,7 @@ public class EditVoxelsVR : MonoBehaviour
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-        dataPointCube = new GameObject[gridLinesx, gridLinesy, gridLinesz];
+        // dataPointCube = new GameObject[gridLinesx, gridLinesy, gridLinesz];
 
         gridValues = new float[gridLinesx, gridLinesy, gridLinesz];
         gridCubeSize = gridScale * gridCubeSizeFactor;
@@ -105,18 +111,21 @@ public class EditVoxelsVR : MonoBehaviour
 
                     if (gridValues[x, y, z] == 1)
                     {
-                        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                        dataPointCube[x, y, z] = cube;
-                        dataPointCube[x, y, z].transform.parent = this.transform;
-                        dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
-                        dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+                        // GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        // dataPointCube[x, y, z] = cube;
+                        // dataPointCube[x, y, z].transform.parent = this.transform;
+                        // dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                        // dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
                         // dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
-                        dataPointCube[x, y, z].tag = "Cubes";
+                        // dataPointCube[x, y, z].tag = "Cubes";
+                        // dataPointCube[x, y, z].AddComponent<Rigidbody>();
+                        // dataPointCube[x, y, z].GetComponent<Rigidbody>().isKinematic = true;
+                        // dataPointCube[x, y, z].GetComponent<Rigidbody>().useGravity = false;
 
-                        MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
-                        meshRenderer.material.color = Color.red;
+                        // MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
+                        // meshRenderer.material.color = Color.red;
 
-                        meshRenderer.enabled = boxesVisible;
+                        // meshRenderer.enabled = boxesVisible;
                         gridValues[x, y, z] += Random.Range(0, randomizer);
                     }
                 }
@@ -142,12 +151,18 @@ public class EditVoxelsVR : MonoBehaviour
         //Debug.Log($"Inverse-World Position: {worldPosition}");
         Vector3Int gridPosition = WorldToGridPosition(worldPosition);
         //Debug.Log($"Grid Position converted: {gridPosition}");
-        GameObject dual = GameObject.Find("Input");
+        GameObject inputActivator = GameObject.Find("Input Activator");
 
-        brushSize = dual.GetComponent<DualInputManager>().brushSize;
-        brushStrength = dual.GetComponent<DualInputManager>().brushStrength;
-        brushFallback = dual.GetComponent<DualInputManager>().brushFallback;
-        bufferBeforeDestroy = dual.GetComponent<DualInputManager>().bufferBeforeDestroy;
+        brushSize = inputActivator.GetComponent<InputActivator>().brushSize;
+        brushStrength = inputActivator.GetComponent<InputActivator>().brushStrength;
+        brushFallback = inputActivator.GetComponent<InputActivator>().brushFallback;
+        bufferBeforeDestroy = inputActivator.GetComponent<InputActivator>().bufferBeforeDestroy;
+
+        // brushSize = 0;
+        // brushStrength = 1;
+        // brushFallback = 1;
+        // bufferBeforeDestroy = 2;
+
 
         bool shouldGenerate = false;
 
@@ -172,6 +187,8 @@ public class EditVoxelsVR : MonoBehaviour
                         {
                             gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] -= brushStrength;
                             shouldGenerate = true;
+                            if (gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] < isoValue - bufferBeforeDestroy)
+                                gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] = -9999;
                             //Debug.Log($"Successful decrease in cube {currentGridPoisition}");
                         }
                         else
@@ -179,6 +196,8 @@ public class EditVoxelsVR : MonoBehaviour
                             deminishingValue = brushStrength * Mathf.Exp(-distance * brushFallback / brushSize);
                             gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] -= deminishingValue;
                             shouldGenerate = true;
+                            if (gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] < isoValue - bufferBeforeDestroy)
+                                gridValues[currentGridPoisition.x, currentGridPoisition.y, currentGridPoisition.z] = -9999;
                             //Debug.Log($"Successful decrease in cube {currentGridPoisition}");
                         }
                     }
@@ -188,7 +207,7 @@ public class EditVoxelsVR : MonoBehaviour
         if (shouldGenerate)
         {
             GenerateMesh();
-            RemoveCubes(dataPointCube, bufferBeforeDestroy);
+            //RemoveCubes(dataPointCube, bufferBeforeDestroy);
         }
     }
 
@@ -221,7 +240,7 @@ public class EditVoxelsVR : MonoBehaviour
 
 
         //Video 16 -- GenerateCollider not implemented
-        //GenerateCollider();
+        GenerateCollider();
     }
 
     public float[,,] FinishedGridValues()
@@ -270,7 +289,7 @@ public class EditVoxelsVR : MonoBehaviour
                     {
                         if (dataPointCube[x, y, z] != null)
                         {
-                            Destroy(dataPointCube[x, y, z]);
+                            // Destroy(dataPointCube[x, y, z]);
                             gridValues[x, y, z] = -9999;
                             //Debug.Log($"Destroyed Cube [{x}, {y}, {z}]");
                         }
@@ -288,6 +307,7 @@ public class EditVoxelsVR : MonoBehaviour
             meshCollider.sharedMesh = mesh;
         else
             filter.gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
+        meshCollider.convex = true;
     }
 
     private Vector3 GridToWorldPosition(int x, int y, int z)

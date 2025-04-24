@@ -10,10 +10,4 @@ public class Disable : MonoBehaviour
         // Disable the GameObject this script is attached to
         gameObject.SetActive(false);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

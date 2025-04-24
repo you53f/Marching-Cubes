@@ -44,7 +44,7 @@ public class TerrainGen : MonoBehaviour
 
     private void Awake()
     {
-        DualInputManager.onTouching += TouchingCallback;
+        MouseInput.onTouching += TouchingCallback;
 
         terrainChunksDisabled = CheckForTerrainChunks();
         if (terrainChunksDisabled)
@@ -53,7 +53,7 @@ public class TerrainGen : MonoBehaviour
 
     private void OnDestroy()
     {
-        DualInputManager.onTouching -= TouchingCallback;
+        MouseInput.onTouching -= TouchingCallback;
     }
 
     private bool CheckForTerrainChunks()

@@ -24,4 +24,11 @@ public class ReloadScene : MonoBehaviour
             Application.Quit();
 #endif
     }
+        public void Restart()
+    {
+        // Get the currently active scene
+        Scene currentScene = SceneManager.GetActiveScene();
+        // Reload the current scene
+        SceneManager.LoadScene(currentScene.name);
+    }
 }

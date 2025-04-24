@@ -147,29 +147,6 @@ public class VoxelMeshVisualizer : MonoBehaviour
         //GenerateCollider();
     }
 
-
-    private void RemoveCubes(GameObject[,,] dataPointCube, float bufferBeforeDestroy)
-    {
-        for (int z = 0; z < gridLines.z; z++)
-        {
-            for (int y = 0; y < gridLines.y; y++)
-            {
-                for (int x = 0; x < gridLines.x; x++)
-                {
-                    if (gridValues[x, y, z] < isoValue - bufferBeforeDestroy)
-                    {
-                        if (dataPointCube[x, y, z] != null)
-                        {
-                            Destroy(dataPointCube[x, y, z]);
-                            //Debug.Log($"Destroyed Cube [{x}, {y}, {z}]");
-                        }
-                        //else
-                        //Debug.Log($"already destroyed cube [{x},{y},{z}]");
-                    }
-                }
-            }
-        }
-    }
     public float[,,] LoadFloatArray(string filePath, string dimensionsFilePath)
     {
         int xLength, yLength, zLength;
@@ -200,24 +177,7 @@ public class VoxelMeshVisualizer : MonoBehaviour
 
         return array;
     }
-    private Vector3 GridToWorldPosition(int x, int y, int z)
-    {
-        Vector3 worldPosition = new Vector3(x, y, z) * gridScale;
-        worldPosition.x -= (gridLines.x * gridScale) / 2 - gridScale / 2;
-        worldPosition.y -= (gridLines.y * gridScale) / 2 - gridScale / 2;
-        worldPosition.z -= (gridLines.z * gridScale) / 2 - gridScale / 2;
-        return worldPosition;
-    }
-
-    private Vector3Int WorldToGridPosition(Vector3 worldPosition)
-    {
-        Vector3Int gridPosition = new Vector3Int();
-        gridPosition.x = Mathf.RoundToInt((worldPosition.x + ((gridLines.x * gridScale / 2)) - (gridScale / 2)) / gridScale);
-        gridPosition.y = Mathf.RoundToInt((worldPosition.y + ((gridLines.y * gridScale / 2)) - (gridScale / 2)) / gridScale);
-        gridPosition.z = Mathf.RoundToInt((worldPosition.z + ((gridLines.z * gridScale / 2)) - (gridScale / 2)) / gridScale);
-        return gridPosition;
-    }
-
+   
 #if UNITY_EDITOR
     /* private void OnDrawGizmos()
     {

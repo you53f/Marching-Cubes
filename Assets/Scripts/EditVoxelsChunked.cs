@@ -44,7 +44,7 @@ public class EditVoxelsChunked : MonoBehaviour
 
     private void Awake()
     {
-        InputManager.onTouching += TouchingCallback;
+        // InputManager.onTouching += TouchingCallback;
         chunkingVoxelizer = FindObjectOfType<ChunkingVoxelizer>();
         chunkingVoxelizer.StartVoxels();
         voxelGridValues = chunkingVoxelizer.GetVoxelGrid();
@@ -59,7 +59,7 @@ public class EditVoxelsChunked : MonoBehaviour
 
     private void OnDestroy()
     {
-        InputManager.onTouching -= TouchingCallback;
+        // InputManager.onTouching -= TouchingCallback;
     }
 
     public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,

@@ -42,14 +42,14 @@ public class WorkingTerrainGen : MonoBehaviour
 
     private void Awake()
     {
-        InputManager.onTouching += TouchingCallback;
+        // InputManager.onTouching += TouchingCallback;
         // Uncomment below for testing TerrainGen alone
         // Initialize(gridScale, gridLines, boxesVisible, brushSize, brushStrength, brushFallback, gridCubeSizeFactor, bufferBeforeDestroy);
     }
 
     private void OnDestroy()
     {
-        InputManager.onTouching -= TouchingCallback;
+        // InputManager.onTouching -= TouchingCallback;
     }
 
     public void Initialize(float gridScale, int gridLines, bool boxesVisible, int brushSize, float brushStrength, float brushFallback,

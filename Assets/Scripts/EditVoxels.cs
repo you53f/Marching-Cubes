@@ -45,7 +45,7 @@ public class EditVoxels : MonoBehaviour
 
     private void Awake()
     {
-        DualInputManager.onTouching += TouchingCallback;
+        MouseInput.onTouching += TouchingCallback;
 
         targetObject = scrawkVoxelizer.targetObject;
         if (importVoxels)
@@ -73,7 +73,7 @@ public class EditVoxels : MonoBehaviour
 
     private void OnDestroy()
     {
-        DualInputManager.onTouching -= TouchingCallback;
+        MouseInput.onTouching -= TouchingCallback;
     }
 
     public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, float gridCubeSizeFactor)
@@ -146,10 +146,10 @@ public class EditVoxels : MonoBehaviour
         //Debug.Log($"Grid Position converted: {gridPosition}");
         GameObject dual = GameObject.Find("Input");
 
-        brushSize = dual.GetComponent<DualInputManager>().brushSize;
-        brushStrength = dual.GetComponent<DualInputManager>().brushStrength;
-        brushFallback = dual.GetComponent<DualInputManager>().brushFallback;
-        bufferBeforeDestroy = dual.GetComponent<DualInputManager>().bufferBeforeDestroy;
+        brushSize = dual.GetComponent<MouseInput>().brushSize;
+        brushStrength = dual.GetComponent<MouseInput>().brushStrength;
+        brushFallback = dual.GetComponent<MouseInput>().brushFallback;
+        bufferBeforeDestroy = dual.GetComponent<MouseInput>().bufferBeforeDestroy;
         bool shouldGenerate = false;
 
         for (int z = gridPosition.z - brushSize; z <= gridPosition.z + brushSize; z++)
