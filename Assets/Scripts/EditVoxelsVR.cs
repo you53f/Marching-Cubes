@@ -10,6 +10,7 @@ using Vector3 = UnityEngine.Vector3;
 
 using Vector2 = UnityEngine.Vector2;
 using System.IO;
+using Unity.Mathematics;
 
 public class EditVoxelsVR : MonoBehaviour
 {
@@ -43,6 +44,14 @@ public class EditVoxelsVR : MonoBehaviour
     GameObject targetObject;
     InputActivator inputActivator;
 
+    [Header("Benchmark Spheres")]
+    [SerializeField] private GameObject PCBenchmarkObject;
+    [SerializeField] private GameObject DBCBenchmarkObject;
+    [SerializeField] private GameObject MBCBenchmarkObject;
+    [SerializeField] private GameObject RoofBenchmarkObject;
+    [SerializeField] private Material drillBenchmarkMaterial;
+    [SerializeField] private Material notDrillBenchmarkMaterial;
+
     private void Awake()
     {
 
@@ -50,6 +59,7 @@ public class EditVoxelsVR : MonoBehaviour
 
         ControllerInput.onTouching += TouchingCallback;
         HapticInput.onTouching += TouchingCallback;
+        InputActivator.MouseTouching += TouchingCallback;
 
         targetObject = scrawkVoxelizer.targetObject;
         if (importVoxels)
@@ -69,7 +79,6 @@ public class EditVoxelsVR : MonoBehaviour
         gridLines.z = voxelGridValues.GetLength(2);
 
 
-        targetObject = scrawkVoxelizer.targetObject;
 
         // Uncomment below for testing with no Chunks
         Initialize(gridScale, gridLines.x, gridLines.y, gridLines.z, boxesVisible, gridCubeSizeFactor);
@@ -79,6 +88,7 @@ public class EditVoxelsVR : MonoBehaviour
     {
         ControllerInput.onTouching -= TouchingCallback;
         HapticInput.onTouching -= TouchingCallback;
+        InputActivator.MouseTouching -= TouchingCallback;
     }
 
     public void Initialize(float gridScale, int gridLinesx, int gridLinesy, int gridLinesz, bool boxesVisible, float gridCubeSizeFactor)
@@ -93,7 +103,7 @@ public class EditVoxelsVR : MonoBehaviour
         mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-        // dataPointCube = new GameObject[gridLinesx, gridLinesy, gridLinesz];
+        dataPointCube = new GameObject[gridLinesx, gridLinesy, gridLinesz];
 
         gridValues = new float[gridLinesx, gridLinesy, gridLinesz];
         gridCubeSize = gridScale * gridCubeSizeFactor;
@@ -111,22 +121,22 @@ public class EditVoxelsVR : MonoBehaviour
 
                     if (gridValues[x, y, z] == 1)
                     {
-                        // GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                        // dataPointCube[x, y, z] = cube;
-                        // dataPointCube[x, y, z].transform.parent = this.transform;
-                        // dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
-                        // dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
-                        // dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
-                        // dataPointCube[x, y, z].tag = "Cubes";
-                        // dataPointCube[x, y, z].AddComponent<Rigidbody>();
-                        // dataPointCube[x, y, z].GetComponent<Rigidbody>().isKinematic = true;
-                        // dataPointCube[x, y, z].GetComponent<Rigidbody>().useGravity = false;
+                        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        dataPointCube[x, y, z] = cube;
+                        dataPointCube[x, y, z].transform.parent = this.transform;
+                        dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                        dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+                        dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
+                        dataPointCube[x, y, z].tag = "Cubes";
+                        dataPointCube[x, y, z].AddComponent<Rigidbody>();
+                        dataPointCube[x, y, z].GetComponent<Rigidbody>().isKinematic = true;
+                        dataPointCube[x, y, z].GetComponent<Rigidbody>().useGravity = false;
 
-                        // MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
-                        // meshRenderer.material.color = Color.red;
+                        MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
+                        meshRenderer.material.color = Color.red;
 
-                        // meshRenderer.enabled = boxesVisible;
-                        gridValues[x, y, z] += Random.Range(0, randomizer);
+                        meshRenderer.enabled = boxesVisible;
+                        gridValues[x, y, z] += UnityEngine.Random.Range(0, randomizer);
                     }
                 }
             }
@@ -157,11 +167,6 @@ public class EditVoxelsVR : MonoBehaviour
         brushStrength = inputActivator.GetComponent<InputActivator>().brushStrength;
         brushFallback = inputActivator.GetComponent<InputActivator>().brushFallback;
         bufferBeforeDestroy = inputActivator.GetComponent<InputActivator>().bufferBeforeDestroy;
-
-        // brushSize = 0;
-        // brushStrength = 1;
-        // brushFallback = 1;
-        // bufferBeforeDestroy = 2;
 
 
         bool shouldGenerate = false;
@@ -207,7 +212,7 @@ public class EditVoxelsVR : MonoBehaviour
         if (shouldGenerate)
         {
             GenerateMesh();
-            //RemoveCubes(dataPointCube, bufferBeforeDestroy);
+            RemoveCubes(dataPointCube, bufferBeforeDestroy);
         }
     }
 
@@ -289,12 +294,63 @@ public class EditVoxelsVR : MonoBehaviour
                     {
                         if (dataPointCube[x, y, z] != null)
                         {
-                            // Destroy(dataPointCube[x, y, z]);
+                            Destroy(dataPointCube[x, y, z]);
                             gridValues[x, y, z] = -9999;
                             //Debug.Log($"Destroyed Cube [{x}, {y}, {z}]");
                         }
                         //else
                         //Debug.Log($"already destroyed cube [{x},{y},{z}]");
+                    }
+                }
+            }
+        }
+    }
+
+    public void CreateBenchmarkSpheres(bool[,,] sphereMask, string materialName, string benchmarkType)
+    {
+        GameObject[,,] listOfSpheres = new GameObject[gridValues.GetLength(0), gridValues.GetLength(1), gridValues.GetLength(2)];
+
+        for (int z = 0; z < gridValues.GetLength(2); z++)
+        {
+            for (int y = 0; y < gridValues.GetLength(1); y++)
+            {
+                for (int x = 0; x < gridValues.GetLength(0); x++)
+                {
+                    if (sphereMask[x, y, z])
+                    {
+                        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                        listOfSpheres[x, y, z] = sphere;
+
+                        if (benchmarkType == "PC")
+                        {
+                            sphere.transform.parent = PCBenchmarkObject.transform;
+                            listOfSpheres[x, y, z].transform.parent = PCBenchmarkObject.transform;
+                        }
+                        else if (benchmarkType == "DBC")
+                        {
+                            sphere.transform.parent = DBCBenchmarkObject.transform;
+                            listOfSpheres[x, y, z].transform.parent = DBCBenchmarkObject.transform;
+                        }
+                        else if (benchmarkType == "MBC")
+                        {
+                            sphere.transform.parent = MBCBenchmarkObject.transform;
+                            listOfSpheres[x, y, z].transform.parent = MBCBenchmarkObject.transform;
+                        }
+                        else if (benchmarkType == "Roof")
+                        {
+                            sphere.transform.parent = RoofBenchmarkObject.transform;
+                            listOfSpheres[x, y, z].transform.parent = RoofBenchmarkObject.transform;
+                        }
+
+                        listOfSpheres[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                        listOfSpheres[x, y, z].transform.localRotation = new Quaternion(0, 30, 0, 0);
+                        listOfSpheres[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+
+                        MeshRenderer meshRenderer = listOfSpheres[x, y, z].GetComponent<MeshRenderer>();
+                        if (materialName == "DrillBenchmark")
+                            meshRenderer.material = drillBenchmarkMaterial;
+                        else if (materialName == "NotDrillBenchmark")
+                            meshRenderer.material = notDrillBenchmarkMaterial;
                     }
                 }
             }

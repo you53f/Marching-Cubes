@@ -1214,23 +1214,23 @@ public class CubeTesterOld : MonoBehaviour
     //Visualization
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.grey;
+        // Gizmos.color = Color.grey;
 
-        Gizmos.DrawLine(topRightFront, topLeftFront);
-        Gizmos.DrawLine(topLeftFront, bottomLeftFront);
-        Gizmos.DrawLine(bottomLeftFront, bottomRightFront);
-        Gizmos.DrawLine(bottomRightFront, bottomRightBack);
-        Gizmos.DrawLine(bottomRightBack, bottomLeftBack);
-        Gizmos.DrawLine(bottomLeftBack, topLeftBack);
-        Gizmos.DrawLine(topLeftBack, topRightBack);
-        Gizmos.DrawLine(topRightBack, bottomRightBack);
-        Gizmos.DrawLine(topRightFront, bottomRightFront);
-        Gizmos.DrawLine(topRightFront, topRightBack);
-        Gizmos.DrawLine(topLeftFront, topLeftBack);
-        Gizmos.DrawLine(bottomLeftFront, bottomLeftBack);
+        // Gizmos.DrawLine(topRightFront, topLeftFront);
+        // Gizmos.DrawLine(topLeftFront, bottomLeftFront);
+        // Gizmos.DrawLine(bottomLeftFront, bottomRightFront);
+        // Gizmos.DrawLine(bottomRightFront, bottomRightBack);
+        // Gizmos.DrawLine(bottomRightBack, bottomLeftBack);
+        // Gizmos.DrawLine(bottomLeftBack, topLeftBack);
+        // Gizmos.DrawLine(topLeftBack, topRightBack);
+        // Gizmos.DrawLine(topRightBack, bottomRightBack);
+        // Gizmos.DrawLine(topRightFront, bottomRightFront);
+        // Gizmos.DrawLine(topRightFront, topRightBack);
+        // Gizmos.DrawLine(topLeftFront, topLeftBack);
+        // Gizmos.DrawLine(bottomLeftFront, bottomLeftBack);
 
 
-        Gizmos.color = Color.black;
+        Gizmos.color = Color.red;
 
         Gizmos.DrawSphere(topRightFront, gridLength / 8);
         Gizmos.DrawSphere(topRightBack, gridLength / 8);
@@ -1241,7 +1241,7 @@ public class CubeTesterOld : MonoBehaviour
         Gizmos.DrawSphere(bottomRightBack, gridLength / 8);
         Gizmos.DrawSphere(bottomRightFront, gridLength / 8);
 
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.blue;
         Gizmos.DrawSphere(topCenterFront, gridLength / 16);
         Gizmos.DrawSphere(topCenterBack, gridLength / 16);
         Gizmos.DrawSphere(topCenterRight, gridLength / 16);

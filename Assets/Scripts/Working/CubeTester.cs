@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class CubeTester : MonoBehaviour
@@ -27,6 +28,7 @@ public class CubeTester : MonoBehaviour
     Vector3 bottomCenterRight;
     Vector3 topCenterLeft;
     Vector3 bottomCenterLeft;
+    [SerializeField] bool visualize = false;
 
     [Header("Configuration")]
     [SerializeField] float topRightFrontValue;
@@ -67,14 +69,158 @@ public class CubeTester : MonoBehaviour
         topRightBackValue,topLeftBackValue,bottomLeftBackValue,bottomRightBackValue};
 
 
+
         Cube cubeData = new Cube(Vector3.zero, gridLength);
-        cubeData.TriangulateWithInterpolation(isoValue,cornerValues);
+        cubeData.TriangulateWithInterpolation(isoValue, cornerValues);
+        if (visualize)
+        {
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topRightFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topRightBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topLeftBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topLeftFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomRightFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomRightBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomLeftBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomLeftFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 8;
+            sphere.GetComponent<Renderer>().material.color = Color.red;
+
+            // midpoints
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topCenterFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topCenterBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topCenterRight;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = topCenterLeft;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = rightCenterFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = rightCenterBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = leftCenterFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = leftCenterBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomCenterFront;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomCenterBack;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomCenterLeft;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = bottomCenterRight;
+            sphere.transform.localScale = Vector3.one * gridLength / 16;
+            sphere.GetComponent<Renderer>().material.color = Color.blue;
+
+        }
 
         mesh.vertices = cubeData.GetVertices();
         mesh.triangles = cubeData.GetTriangles();
 
         //Assigning the two lists to the mesh filter
         filter.mesh = mesh;
+    }
+
+    public static void DrawLine(Vector3 p1, Vector3 p2, float width)
+    {
+        int count = 1 + Mathf.CeilToInt(width); // how many lines are needed.
+        if (count == 1)
+        {
+            Gizmos.DrawLine(p1, p2);
+        }
+        else
+        {
+            Camera c = Camera.current;
+            if (c == null)
+            {
+                Debug.LogError("Camera.current is null");
+                return;
+            }
+            var scp1 = c.WorldToScreenPoint(p1);
+            var scp2 = c.WorldToScreenPoint(p2);
+
+            Vector3 v1 = (scp2 - scp1).normalized; // line direction
+            Vector3 n = Vector3.Cross(v1, Vector3.forward); // normal vector
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 o = 0.99f * n * width * ((float)i / (count - 1) - 0.5f);
+                Vector3 origin = c.ScreenToWorldPoint(scp1 + o);
+                Vector3 destiny = c.ScreenToWorldPoint(scp2 + o);
+                Gizmos.DrawLine(origin, destiny);
+            }
+        }
     }
 
     private void PositionInitialization()
@@ -108,51 +254,53 @@ public class CubeTester : MonoBehaviour
         topCenterLeft = topLeftFront + Vector3.forward / 2 * gridLength;
         bottomCenterRight = bottomRightFront + Vector3.forward / 2 * gridLength;
         bottomCenterLeft = bottomLeftFront + Vector3.forward / 2 * gridLength;
+
+
     }
 
     //Visualization
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.grey;
-
-        Gizmos.DrawLine(topRightFront, topLeftFront);
-        Gizmos.DrawLine(topLeftFront, bottomLeftFront);
-        Gizmos.DrawLine(bottomLeftFront, bottomRightFront);
-        Gizmos.DrawLine(bottomRightFront, bottomRightBack);
-        Gizmos.DrawLine(bottomRightBack, bottomLeftBack);
-        Gizmos.DrawLine(bottomLeftBack, topLeftBack);
-        Gizmos.DrawLine(topLeftBack, topRightBack);
-        Gizmos.DrawLine(topRightBack, bottomRightBack);
-        Gizmos.DrawLine(topRightFront, bottomRightFront);
-        Gizmos.DrawLine(topRightFront, topRightBack);
-        Gizmos.DrawLine(topLeftFront, topLeftBack);
-        Gizmos.DrawLine(bottomLeftFront, bottomLeftBack);
-
-
         Gizmos.color = Color.black;
 
-        Gizmos.DrawSphere(topRightFront, gridLength / 8);
-        Gizmos.DrawSphere(topRightBack, gridLength / 8);
-        Gizmos.DrawSphere(topLeftFront, gridLength / 8);
-        Gizmos.DrawSphere(topLeftBack, gridLength / 8);
-        Gizmos.DrawSphere(bottomLeftBack, gridLength / 8);
-        Gizmos.DrawSphere(bottomLeftFront, gridLength / 8);
-        Gizmos.DrawSphere(bottomRightBack, gridLength / 8);
-        Gizmos.DrawSphere(bottomRightFront, gridLength / 8);
+        DrawLine(topRightFront, topLeftFront, 3);
+        DrawLine(topLeftFront, bottomLeftFront, 3);
+        DrawLine(bottomLeftFront, bottomRightFront, 3);
+        DrawLine(bottomRightFront, bottomRightBack, 3);
+        DrawLine(bottomRightBack, bottomLeftBack, 3);
+        DrawLine(bottomLeftBack, topLeftBack, 3);
+        DrawLine(topLeftBack, topRightBack, 3);
+        DrawLine(topRightBack, bottomRightBack, 3);
+        DrawLine(topRightFront, bottomRightFront, 3);
+        DrawLine(topRightFront, topRightBack, 3);
+        DrawLine(topLeftFront, topLeftBack, 3);
+        DrawLine(bottomLeftFront, bottomLeftBack, 3);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(topCenterFront, gridLength / 16);
-        Gizmos.DrawSphere(topCenterBack, gridLength / 16);
-        Gizmos.DrawSphere(topCenterRight, gridLength / 16);
-        Gizmos.DrawSphere(topCenterLeft, gridLength / 16);
-        Gizmos.DrawSphere(rightCenterFront, gridLength / 16);
-        Gizmos.DrawSphere(rightCenterBack, gridLength / 16);
-        Gizmos.DrawSphere(leftCenterBack, gridLength / 16);
-        Gizmos.DrawSphere(leftCenterFront, gridLength / 16);
-        Gizmos.DrawSphere(bottomCenterBack, gridLength / 16);
-        Gizmos.DrawSphere(bottomCenterFront, gridLength / 16);
-        Gizmos.DrawSphere(bottomCenterLeft, gridLength / 16);
-        Gizmos.DrawSphere(bottomCenterRight, gridLength / 16);
+
+        // Gizmos.color = Color.red;
+
+        // Gizmos.DrawSphere(topRightFront, gridLength / 8);
+        // Gizmos.DrawSphere(topRightBack, gridLength / 8);
+        // Gizmos.DrawSphere(topLeftFront, gridLength / 8);
+        // Gizmos.DrawSphere(topLeftBack, gridLength / 8);
+        // Gizmos.DrawSphere(bottomLeftBack, gridLength / 8);
+        // Gizmos.DrawSphere(bottomLeftFront, gridLength / 8);
+        // Gizmos.DrawSphere(bottomRightBack, gridLength / 8);
+        // Gizmos.DrawSphere(bottomRightFront, gridLength / 8);
+
+        // Gizmos.color = Color.blue;
+        // Gizmos.DrawSphere(topCenterFront, gridLength / 16);
+        // Gizmos.DrawSphere(topCenterBack, gridLength / 16);
+        // Gizmos.DrawSphere(topCenterRight, gridLength / 16);
+        // Gizmos.DrawSphere(topCenterLeft, gridLength / 16);
+        // Gizmos.DrawSphere(rightCenterFront, gridLength / 16);
+        // Gizmos.DrawSphere(rightCenterBack, gridLength / 16);
+        // Gizmos.DrawSphere(leftCenterBack, gridLength / 16);
+        // Gizmos.DrawSphere(leftCenterFront, gridLength / 16);
+        // Gizmos.DrawSphere(bottomCenterBack, gridLength / 16);
+        // Gizmos.DrawSphere(bottomCenterFront, gridLength / 16);
+        // Gizmos.DrawSphere(bottomCenterLeft, gridLength / 16);
+        // Gizmos.DrawSphere(bottomCenterRight, gridLength / 16);
     }
 
 }

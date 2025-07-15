@@ -7,14 +7,14 @@ using System.IO;
 public class VoxelsExporter : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] private ScrawkVoxelizer scrawk;
+    [SerializeField] private DeepVoxelizer deepVox;
     private float[,,] voxelGridValues;
     [SerializeField] private string voxelGridValuesPath;
     [SerializeField] private string voxelDimensionsPath;
     void Start()
     {
-        scrawk.StartVoxels();
-        voxelGridValues = scrawk.GetVoxelGrid();
+        deepVox.VoxelizeMesh();
+        voxelGridValues = deepVox.GetVoxelGrid();
         SaveFloatArray(voxelGridValues, voxelGridValuesPath, voxelDimensionsPath);
     }
 
@@ -48,7 +48,7 @@ public class VoxelsExporter : MonoBehaviour
         }
 
         using (StreamWriter writer = new StreamWriter(File.Open(dimensionsFilePath, FileMode.Create))) {
-        writer.WriteLine(scrawk.voxelResolution);
+        writer.WriteLine(deepVox.voxelSize);
         writer.WriteLine(xLength);
         writer.WriteLine(yLength);
         writer.WriteLine(zLength);

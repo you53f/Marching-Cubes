@@ -112,12 +112,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
-      propertyPath: importVoxels
+      propertyPath: boxesVisible
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: importVoxels
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: dimensionsFilePath
       value: Assets\VoxelStorage\Slicer\Trial 3\Incisor\NT0.06dim.dat
+      objectReference: {fileID: 0}
+    - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: gridCubeSizeFactor
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1152318243321584675, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: voxelGridValuesPath
@@ -127,13 +135,29 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1583323029457920212, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1723535959571544633, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1814750311149124950, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: BI Edit Voxels
+      objectReference: {fileID: 0}
     - target: {fileID: 2348519778424112096, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409169233255248051, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: AOL Edit Voxels
+      objectReference: {fileID: 0}
+    - target: {fileID: 2449069890006096827, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: BO Edit Voxels
       objectReference: {fileID: 0}
     - target: {fileID: 2621204622353588649, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_Name
@@ -142,6 +166,14 @@ PrefabInstance:
     - target: {fileID: 2894094219049581170, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3283884606020008974, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: AOM Edit Voxels
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327995106126782772, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: AIT Edit Voxels
       objectReference: {fileID: 0}
     - target: {fileID: 3517807095462456238, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
@@ -163,13 +195,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4679066676550308709, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5042012678945826416, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5320555982570402512, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5578106904250927281, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
@@ -179,45 +215,73 @@ PrefabInstance:
       propertyPath: targetObject
       value: 
       objectReference: {fileID: 3910188033251499792}
+    - target: {fileID: 6537927845863789931, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7020065016972824511, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7078065680052095597, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.12
+      objectReference: {fileID: 0}
     - target: {fileID: 7467288125578248366, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7471267157380682027, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7672018049057223298, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.089
+      objectReference: {fileID: 0}
+    - target: {fileID: 7672018049057223298, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.036
       objectReference: {fileID: 0}
     - target: {fileID: 7691325935446158604, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7804433568615632169, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: AIL Edit Voxels
+      objectReference: {fileID: 0}
     - target: {fileID: 7833369380388556235, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7922001959451658176, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Name
+      value: AOT Edit Voxels
+      objectReference: {fileID: 0}
     - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.024178276
+      value: 0.041752532
       objectReference: {fileID: 0}
     - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.024178276
+      value: 0.041752532
       objectReference: {fileID: 0}
     - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.024178276
+      value: 0.041752532
       objectReference: {fileID: 0}
     - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.13898
+      value: 0.1262
       objectReference: {fileID: 0}
     - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.97
+      value: 1.0238
       objectReference: {fileID: 0}
     - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.497
+      value: -4.5185
       objectReference: {fileID: 0}
     - target: {fileID: 7974101855151721867, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       propertyPath: m_LocalRotation.w
@@ -247,6 +311,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8094891973103549684, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: voxelResolution
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 9000101017690182147, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176264899096774149, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 98284458482369629, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
     - {fileID: 2645165312176494850, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
@@ -257,6 +333,7 @@ PrefabInstance:
     - {fileID: 4739971798760570492, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
     m_RemovedGameObjects:
     - {fileID: 2697151832958756946, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
+    - {fileID: 7654706998231278757, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2456799784151141502, guid: e63f43eb139691740976a8ae85d26e77, type: 3}
       insertIndex: 0
@@ -337,9 +414,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc41e4a12c81a60498efdc56b4e0723d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  importVoxels: 1
-  voxelGridValuesPath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08.dat
-  dimensionsFilePath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.08dim.dat
+  importVoxels: 0
+  voxelGridValuesPath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.05.dat
+  dimensionsFilePath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOT0.05dim.dat
   scrawkVoxelizer: {fileID: 449170303198197358}
   boxesVisible: 0
   gridScale: 0
@@ -445,7 +522,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4843588714401159288}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8dddddd494134c94b8830604df99c6b4, type: 3}
   m_Name: 
@@ -472,9 +549,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc41e4a12c81a60498efdc56b4e0723d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  importVoxels: 1
-  voxelGridValuesPath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.08.dat
-  dimensionsFilePath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.08dim.dat
+  importVoxels: 0
+  voxelGridValuesPath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.05.dat
+  dimensionsFilePath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOL0.05dim.dat
   scrawkVoxelizer: {fileID: 391204925945951164}
   boxesVisible: 0
   gridScale: 0
@@ -554,8 +631,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   importVoxels: 1
-  voxelGridValuesPath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.08.dat
-  dimensionsFilePath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.08dim.dat
+  voxelGridValuesPath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.05.dat
+  dimensionsFilePath: Assets\VoxelStorage\Slicer\Trial 3\Incisor\AOM0.05dim.dat
   scrawkVoxelizer: {fileID: 4462191255683542202}
   boxesVisible: 0
   gridScale: 0

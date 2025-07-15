@@ -3,52 +3,200 @@ using UnityEngine;
 
 public class InputActivator : MonoBehaviour
 {
+    public static Action<Vector3> MouseTouching;
+
     [Header("Burr Settings")]
     public int brushSize;
     public float brushStrength;
     public float brushFallback;
     public float bufferBeforeDestroy;
 
-    [Header("Activated Objects")]
+    public enum InputMethod { Mouse, Controllers, Haptic }
+    public enum Magnification { x1, x2, x4 }
+    [SerializeField] public InputMethod inputMethods;
+    [SerializeField] public Magnification magnification;
+
+    [Header("Original Size")]
     [SerializeField] private GameObject controllerHandpiece;
     [SerializeField] private GameObject hapticHandpiece;
-    [SerializeField] private GameObject controllerInput;
-    [SerializeField] private GameObject hapticInput;
+    [SerializeField] private GameObject molar;
 
-    public enum InputMethod { Controllers, Haptic }
-    [SerializeField] public InputMethod inputMethods;
-    [HideInInspector] public int selector;
+    [Header("2x Size")]
+    [SerializeField] private GameObject controllerHandpiece2x;
+    [SerializeField] private GameObject hapticHandpiece2x;
+    [SerializeField] private GameObject molar2x;
+
+    [Header("4x Size")]
+    [SerializeField] private GameObject controllerHandpiece4x;
+    [SerializeField] private GameObject hapticHandpiece4x;
+    [SerializeField] private GameObject molar4x;
+
+    private int inputSelector;
+    [HideInInspector] public int magnificationSelector;
 
     void Start()
     {
+        switch (magnification)
+        {
+            case Magnification.x1:
+                magnificationSelector = 1;
+                break;
+            case Magnification.x2:
+                magnificationSelector = 2;
+                break;
+            case Magnification.x4:
+                magnificationSelector = 4;
+                break;
+        }
+
         switch (inputMethods)
         {
+            case InputMethod.Mouse:
+                Mouse();
+                inputSelector = 2;
+                // Debug.Log("Mouse input");
+                break;
             case InputMethod.Controllers:
-                Controllers();
-                selector = 0;
+                Controllers(magnification);
+                inputSelector = 0;
                 // Debug.Log("Controller input");
                 break;
             case InputMethod.Haptic:
                 Haptics();
-                selector = 1;
+                inputSelector = 1;
                 // Debug.Log("Haptic input");
+                break;
+
+        }
+    }
+
+    void Update()
+    {
+        if (inputSelector == 2)
+        {
+            if (Input.GetMouseButton(0))
+                ClickingWithMouse();
+        }
+    }
+
+    private void ClickingWithMouse()
+    {
+        // Debug.Log("Inside Mouse input");
+        RaycastHit hitInfo;
+        Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);
+
+        if (hitInfo.collider == null)
+        {
+            Debug.Log("no hit");
+            return;
+        }
+
+        Debug.Log($"hit with mouse at {hitInfo.point}");
+        MouseTouching?.Invoke(hitInfo.point);
+
+    }
+
+    private void Mouse()
+    {
+        // controllerInput.SetActive(false);
+        // controllerHandpiece.SetActive(false);
+        // hapticInput.SetActive(false);
+        // hapticHandpiece.SetActive(false);
+    }
+
+    private void Controllers(Magnification magnification)
+    {
+        switch (magnification)
+        {
+            case Magnification.x1:
+                controllerHandpiece.SetActive(true);
+                hapticHandpiece.SetActive(false);
+                molar.SetActive(true);
+
+                controllerHandpiece2x.SetActive(false);
+                hapticHandpiece2x.SetActive(false);
+                molar2x.SetActive(false);
+
+                controllerHandpiece4x.SetActive(false);
+                hapticHandpiece4x.SetActive(false);
+                molar4x.SetActive(false);
+                break;
+
+            case Magnification.x2:
+                controllerHandpiece.SetActive(false);
+                hapticHandpiece.SetActive(false);
+                molar.SetActive(false);
+
+                controllerHandpiece2x.SetActive(true);
+                hapticHandpiece2x.SetActive(false);
+                molar2x.SetActive(true);
+
+                controllerHandpiece4x.SetActive(false);
+                hapticHandpiece4x.SetActive(false);
+                molar4x.SetActive(false);
+                break;
+
+            case Magnification.x4:
+                controllerHandpiece.SetActive(false);
+                hapticHandpiece.SetActive(false);
+                molar.SetActive(false);
+
+                controllerHandpiece2x.SetActive(false);
+                hapticHandpiece2x.SetActive(false);
+                molar2x.SetActive(false);
+
+                controllerHandpiece4x.SetActive(true);
+                hapticHandpiece4x.SetActive(false);
+                molar4x.SetActive(true);
                 break;
         }
     }
 
-    private void Controllers()
-    {
-        controllerInput.SetActive(true);
-        controllerHandpiece.SetActive(true);
-        hapticInput.SetActive(false);
-        hapticHandpiece.SetActive(false);
-    }
-
     private void Haptics()
     {
-        controllerInput.SetActive(false);
-        controllerHandpiece.SetActive(false);
-        // hapticInput.SetActive(true);
-        hapticHandpiece.SetActive(true);
+        switch (magnification)
+        {
+            case Magnification.x1:
+                controllerHandpiece.SetActive(false);
+                hapticHandpiece.SetActive(true);
+                molar.SetActive(true);
+
+                controllerHandpiece2x.SetActive(false);
+                hapticHandpiece2x.SetActive(false);
+                molar2x.SetActive(false);
+
+                controllerHandpiece4x.SetActive(false);
+                hapticHandpiece4x.SetActive(false);
+                molar4x.SetActive(false);
+                break;
+
+            case Magnification.x2:
+                controllerHandpiece.SetActive(false);
+                hapticHandpiece.SetActive(false);
+                molar.SetActive(false);
+
+                controllerHandpiece2x.SetActive(false);
+                hapticHandpiece2x.SetActive(true);
+                molar2x.SetActive(true);
+
+                controllerHandpiece4x.SetActive(false);
+                hapticHandpiece4x.SetActive(false);
+                molar4x.SetActive(false);
+                break;
+
+            case Magnification.x4:
+                controllerHandpiece.SetActive(false);
+                hapticHandpiece.SetActive(false);
+                molar.SetActive(false);
+
+                controllerHandpiece2x.SetActive(false);
+                hapticHandpiece2x.SetActive(false);
+                molar2x.SetActive(false);
+
+                controllerHandpiece4x.SetActive(false);
+                hapticHandpiece4x.SetActive(true);
+                molar4x.SetActive(true);
+                break;
+        }
     }
 }

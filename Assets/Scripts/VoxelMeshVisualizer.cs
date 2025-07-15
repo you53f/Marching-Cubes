@@ -58,7 +58,7 @@ public class VoxelMeshVisualizer : MonoBehaviour
         gridLines.z = voxelGridValues.GetLength(2);
 
 
-        Debug.Log($"Number of voxels: {gridLines.x * gridLines.y * gridLines.z}");
+        Debug.Log($"Number of voxels: {gridLines.x * gridLines.y * gridLines.z}", this);
         targetObject = scrawkVoxelizer.targetObject;
 
         // Uncomment below for testing with no Chunks
@@ -101,6 +101,18 @@ public class VoxelMeshVisualizer : MonoBehaviour
 
                     if (gridValues[x, y, z] == 1)
                     {
+                        if (boxesVisible)
+                        {
+                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            dataPointCube[x, y, z] = cube;
+                            dataPointCube[x, y, z].transform.parent = this.transform;
+                            dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                            dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+
+                            MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
+                            meshRenderer.material.color = Color.red;
+                        }
+
                         gridValues[x, y, z] += Random.Range(0, randomizer);
                     }
                 }
@@ -117,6 +129,16 @@ public class VoxelMeshVisualizer : MonoBehaviour
 
         GenerateMesh();
     }
+
+    private Vector3 GridToWorldPosition(int x, int y, int z)
+    {
+        Vector3 worldPosition = new Vector3(x, y, z) * gridScale;
+        worldPosition.x -= (gridLines.x * gridScale) / 2 - gridScale / 2;
+        worldPosition.y -= (gridLines.y * gridScale) / 2 - gridScale / 2;
+        worldPosition.z -= (gridLines.z * gridScale) / 2 - gridScale / 2;
+        return worldPosition;
+    }
+
 
     private void GenerateMesh()
     {
@@ -177,7 +199,7 @@ public class VoxelMeshVisualizer : MonoBehaviour
 
         return array;
     }
-   
+
 #if UNITY_EDITOR
     /* private void OnDrawGizmos()
     {
