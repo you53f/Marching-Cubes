@@ -7,18 +7,19 @@ using System.IO;
 public class VoxelsExporter : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] private DeepVoxelizer deepVox;
+    private ScrawkVoxelizer scrawkVoxelizer;
     private float[,,] voxelGridValues;
     [SerializeField] private string voxelGridValuesPath;
     [SerializeField] private string voxelDimensionsPath;
     void Start()
     {
-        deepVox.VoxelizeMesh();
-        voxelGridValues = deepVox.GetVoxelGrid();
+        scrawkVoxelizer = GetComponent<ScrawkVoxelizer>();
+        scrawkVoxelizer.VoxelizeMesh();
+        voxelGridValues = scrawkVoxelizer.GetVoxelGrid();
         SaveFloatArray(voxelGridValues, voxelGridValuesPath, voxelDimensionsPath);
     }
 
-    private void SaveFloatArray(float[,,] array, string filePath,string dimensionsFilePath)
+    private void SaveFloatArray(float[,,] array, string filePath, string dimensionsFilePath)
     {
         int xLength = array.GetLength(0);
         int yLength = array.GetLength(1);
@@ -47,11 +48,12 @@ public class VoxelsExporter : MonoBehaviour
             }
         }
 
-        using (StreamWriter writer = new StreamWriter(File.Open(dimensionsFilePath, FileMode.Create))) {
-        writer.WriteLine(deepVox.voxelSize);
-        writer.WriteLine(xLength);
-        writer.WriteLine(yLength);
-        writer.WriteLine(zLength);
-    }
+        using (StreamWriter writer = new StreamWriter(File.Open(dimensionsFilePath, FileMode.Create)))
+        {
+            writer.WriteLine(scrawkVoxelizer.voxelResolution);
+            writer.WriteLine(xLength);
+            writer.WriteLine(yLength);
+            writer.WriteLine(zLength);
+        }
     }
 }

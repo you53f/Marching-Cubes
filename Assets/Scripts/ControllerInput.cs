@@ -19,14 +19,14 @@ public class ControllerInput : MonoBehaviour
     private bool holding = false;
     private Coroutine hapticCoroutine;
     private bool on = false;
-    [SerializeField] private GameObject cubeCheck;
+    // [SerializeField] private GameObject cubeCheck;
     MeshRenderer meshRenderer;
 
     void Start()
     {
         // Get the SphereCollider component attached to this GameObject
         boxCollider = GetComponent<BoxCollider>();
-        meshRenderer = cubeCheck.GetComponent<MeshRenderer>();
+        // meshRenderer = cubeCheck.GetComponent<MeshRenderer>();
     }
     void Update()
     {
@@ -56,7 +56,20 @@ public class ControllerInput : MonoBehaviour
                             i += 100;
 
                             textMeshProUGUI.text = "Renderer Hit";
-                            meshRenderer.material.color = Color.blue;
+                            // meshRenderer.material.color = Color.blue;
+                        }
+
+                        else if (hitColliders[i].CompareTag("Floor"))
+                        {
+                            floorHit = true;
+                            textMeshProUGUI.text = "Collided with Floor";
+                            i += 100;
+                        }
+                        else if (hitColliders[i].CompareTag("Diff"))
+                        {
+                            diffHit = true;
+                            textMeshProUGUI.text = "Collided with Diff";
+                            i += 100;
                         }
                     }
                 }
@@ -69,7 +82,7 @@ public class ControllerInput : MonoBehaviour
         }
         else
         {
-            meshRenderer.material.color = Color.red;
+            // meshRenderer.material.color = Color.red;
         }
     }
 
@@ -132,19 +145,19 @@ public class ControllerInput : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Floor"))
-        {
-            floorHit = true;
+    // void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.CompareTag("Floor"))
+    //     {
+    //         floorHit = true;
 
-            textMeshProUGUI.text = "Collided with Floor";
-        }
-        else if (other.CompareTag("Diff"))
-        {
-            diffHit = true;
+    //         textMeshProUGUI.text = "Collided with Floor";
+    //     }
+    //     else if (other.CompareTag("Diff"))
+    //     {
+    //         diffHit = true;
 
-            textMeshProUGUI.text = "Collided with Diff";
-        }
-    }
+    //         textMeshProUGUI.text = "Collided with Diff";
+    //     }
+    // }
 }

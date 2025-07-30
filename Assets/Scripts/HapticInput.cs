@@ -14,37 +14,20 @@ public class HapticInput : MonoBehaviour
     [HideInInspector] public bool diffHit = false;
 
 
-    [SerializeField] private GameObject cubeCheck;
-    MeshRenderer meshRenderer;
+    // [SerializeField] private GameObject cubeCheck;
+    // MeshRenderer meshRenderer;
     void Start()
     {
         // Get the SphereCollider component attached to this GameObject
         boxCollider = GetComponent<BoxCollider>();
 
-        meshRenderer = cubeCheck.GetComponent<MeshRenderer>();
+        // meshRenderer = cubeCheck.GetComponent<MeshRenderer>();
     }
     void Update()
     {
-        // Collider[] hitColliders = Physics.OverlapSphere(sphereCollider.transform.position - compensate, sphereCollider.radius * sizeFactor);
-        // //     Debug.Log($"Overlapping colliders: {hitColliders.Length}");
-
-        // // Check if there are any overlapping colliders
-        // if (hitColliders.Length > 0)
-        // {
-        //     for (int i = 0; i < hitColliders.Length; i++)
-        //     {
-        //         if (hitColliders[i].CompareTag("Renderer"))
-        //         {
-        //             // Debug.Log($"Overlap detected with: {hitColliders[i].gameObject.name} at position: {hitColliders[i].ClosestPoint(transform.position)}");
-        //             onTouching?.Invoke(hitColliders[i].ClosestPoint(transform.position));
-        //             i = 100000;
-        //         }
-        //     }
-        // }
-
         Collider[] hitColliders = Physics.OverlapBox(boxCollider.transform.position,
-               new Vector3(boxCollider.size.x * sizeFactor.x, boxCollider.size.y * sizeFactor.y, boxCollider.size.z * sizeFactor.z),
-               boxCollider.transform.rotation);
+           new Vector3(boxCollider.size.x * sizeFactor.x, boxCollider.size.y * sizeFactor.y, boxCollider.size.z * sizeFactor.z),
+           boxCollider.transform.rotation);
         // Debug.Log($"Overlapping colliders: {hitColliders.Length}");
 
         // Check if there are any overlapping colliders
@@ -59,9 +42,21 @@ public class HapticInput : MonoBehaviour
                         // Debug.Log($"Overlap detected with: {hitColliders[i].gameObject.name} at position: {hitColliders[i].transform.position}");
 
                         textMeshProUGUI.text = hitColliders[i].gameObject.name;
-                        meshRenderer.material.color = Color.blue;
+                        // meshRenderer.material.color = Color.blue;
                         // onTouching?.Invoke(hitColliders[i].ClosestPoint(transform.position));
                         onTouching?.Invoke(hitColliders[i].transform.position);
+                        i += 100;
+                    }
+                    else if (hitColliders[i].CompareTag("Floor"))
+                    {
+                        floorHit = true;
+                        textMeshProUGUI.text = "Collided with Floor";
+                        i += 100;
+                    }
+                    else if (hitColliders[i].CompareTag("Diff"))
+                    {
+                        diffHit = true;
+                        textMeshProUGUI.text = "Collided with Diff";
                         i += 100;
                     }
                     // else
@@ -73,7 +68,7 @@ public class HapticInput : MonoBehaviour
         else
         {
             textMeshProUGUI.text = "New Text";
-            meshRenderer.material.color = Color.red;
+            // meshRenderer.material.color = Color.red;
             // Debug.Log("No overlaps detected.");
         }
     }

@@ -49,6 +49,7 @@ public class EditVoxelsVR : MonoBehaviour
     [SerializeField] private GameObject DBCBenchmarkObject;
     [SerializeField] private GameObject MBCBenchmarkObject;
     [SerializeField] private GameObject RoofBenchmarkObject;
+    [SerializeField] private GameObject WallsBenchmarkObject;
     [SerializeField] private Material drillBenchmarkMaterial;
     [SerializeField] private Material notDrillBenchmarkMaterial;
 
@@ -137,6 +138,28 @@ public class EditVoxelsVR : MonoBehaviour
 
                         meshRenderer.enabled = boxesVisible;
                         gridValues[x, y, z] += UnityEngine.Random.Range(0, randomizer);
+                    }
+                     if (gridValues[x, y, z] < 1)
+                    {
+                        if (boxesVisible)
+                        {
+                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            dataPointCube[x, y, z] = cube;
+                            dataPointCube[x, y, z].transform.parent = this.transform;
+                            dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                            dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+                            dataPointCube[x, y, z].GetComponent<Collider>().isTrigger = true;
+                            dataPointCube[x, y, z].tag = "Cubes";
+                            dataPointCube[x, y, z].AddComponent<Rigidbody>();
+                            dataPointCube[x, y, z].GetComponent<Rigidbody>().isKinematic = true;
+                            dataPointCube[x, y, z].GetComponent<Rigidbody>().useGravity = false;
+
+                            MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
+                            meshRenderer.material.color = Color.black;
+
+                            meshRenderer.enabled = boxesVisible;
+                            gridValues[x, y, z] += UnityEngine.Random.Range(0, randomizer);
+                        }
                     }
                 }
             }
@@ -340,6 +363,11 @@ public class EditVoxelsVR : MonoBehaviour
                         {
                             sphere.transform.parent = RoofBenchmarkObject.transform;
                             listOfSpheres[x, y, z].transform.parent = RoofBenchmarkObject.transform;
+                        }
+                        else if (benchmarkType == "Walls")
+                        {
+                            sphere.transform.parent = WallsBenchmarkObject.transform;
+                            listOfSpheres[x, y, z].transform.parent = WallsBenchmarkObject.transform;
                         }
 
                         listOfSpheres[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);

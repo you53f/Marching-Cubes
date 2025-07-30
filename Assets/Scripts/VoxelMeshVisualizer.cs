@@ -99,7 +99,7 @@ public class VoxelMeshVisualizer : MonoBehaviour
                     //gridValues[x,y,z] = isoValue + Random.Range(-0.5f, 0.5f); 
                     //Debug.Log($"Cube ({x}, {y}, {z}) has a value of {value}");
 
-                    if (gridValues[x, y, z] == 1)
+                    if (gridValues[x, y, z] >= isoValue)
                     {
                         if (boxesVisible)
                         {
@@ -115,6 +115,18 @@ public class VoxelMeshVisualizer : MonoBehaviour
 
                         gridValues[x, y, z] += Random.Range(0, randomizer);
                     }
+                    if (gridValues[x, y, z] < isoValue)
+                        if (boxesVisible)
+                        {
+                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            dataPointCube[x, y, z] = cube;
+                            dataPointCube[x, y, z].transform.parent = this.transform;
+                            dataPointCube[x, y, z].transform.localPosition = GridToWorldPosition(x, y, z);
+                            dataPointCube[x, y, z].transform.localScale = new Vector3(gridCubeSize, gridCubeSize, gridCubeSize);
+
+                            MeshRenderer meshRenderer = dataPointCube[x, y, z].GetComponent<MeshRenderer>();
+                            meshRenderer.material.color = Color.black;
+                        }
                 }
             }
         }

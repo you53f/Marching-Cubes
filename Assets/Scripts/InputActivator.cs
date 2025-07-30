@@ -12,7 +12,7 @@ public class InputActivator : MonoBehaviour
     public float bufferBeforeDestroy;
 
     public enum InputMethod { Mouse, Controllers, Haptic }
-    public enum Magnification { x1, x2, x4 }
+    public enum Magnification { x1, x2 }
     [SerializeField] public InputMethod inputMethods;
     [SerializeField] public Magnification magnification;
 
@@ -26,11 +26,6 @@ public class InputActivator : MonoBehaviour
     [SerializeField] private GameObject hapticHandpiece2x;
     [SerializeField] private GameObject molar2x;
 
-    [Header("4x Size")]
-    [SerializeField] private GameObject controllerHandpiece4x;
-    [SerializeField] private GameObject hapticHandpiece4x;
-    [SerializeField] private GameObject molar4x;
-
     private int inputSelector;
     [HideInInspector] public int magnificationSelector;
 
@@ -43,9 +38,6 @@ public class InputActivator : MonoBehaviour
                 break;
             case Magnification.x2:
                 magnificationSelector = 2;
-                break;
-            case Magnification.x4:
-                magnificationSelector = 4;
                 break;
         }
 
@@ -116,10 +108,6 @@ public class InputActivator : MonoBehaviour
                 controllerHandpiece2x.SetActive(false);
                 hapticHandpiece2x.SetActive(false);
                 molar2x.SetActive(false);
-
-                controllerHandpiece4x.SetActive(false);
-                hapticHandpiece4x.SetActive(false);
-                molar4x.SetActive(false);
                 break;
 
             case Magnification.x2:
@@ -130,24 +118,6 @@ public class InputActivator : MonoBehaviour
                 controllerHandpiece2x.SetActive(true);
                 hapticHandpiece2x.SetActive(false);
                 molar2x.SetActive(true);
-
-                controllerHandpiece4x.SetActive(false);
-                hapticHandpiece4x.SetActive(false);
-                molar4x.SetActive(false);
-                break;
-
-            case Magnification.x4:
-                controllerHandpiece.SetActive(false);
-                hapticHandpiece.SetActive(false);
-                molar.SetActive(false);
-
-                controllerHandpiece2x.SetActive(false);
-                hapticHandpiece2x.SetActive(false);
-                molar2x.SetActive(false);
-
-                controllerHandpiece4x.SetActive(true);
-                hapticHandpiece4x.SetActive(false);
-                molar4x.SetActive(true);
                 break;
         }
     }
@@ -164,10 +134,6 @@ public class InputActivator : MonoBehaviour
                 controllerHandpiece2x.SetActive(false);
                 hapticHandpiece2x.SetActive(false);
                 molar2x.SetActive(false);
-
-                controllerHandpiece4x.SetActive(false);
-                hapticHandpiece4x.SetActive(false);
-                molar4x.SetActive(false);
                 break;
 
             case Magnification.x2:
@@ -179,23 +145,6 @@ public class InputActivator : MonoBehaviour
                 hapticHandpiece2x.SetActive(true);
                 molar2x.SetActive(true);
 
-                controllerHandpiece4x.SetActive(false);
-                hapticHandpiece4x.SetActive(false);
-                molar4x.SetActive(false);
-                break;
-
-            case Magnification.x4:
-                controllerHandpiece.SetActive(false);
-                hapticHandpiece.SetActive(false);
-                molar.SetActive(false);
-
-                controllerHandpiece2x.SetActive(false);
-                hapticHandpiece2x.SetActive(false);
-                molar2x.SetActive(false);
-
-                controllerHandpiece4x.SetActive(false);
-                hapticHandpiece4x.SetActive(true);
-                molar4x.SetActive(true);
                 break;
         }
     }
